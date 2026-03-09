@@ -1,0 +1,2 @@
+# GG
+MAMİ01 GG İŞLEMLERİ 
