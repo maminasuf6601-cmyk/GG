@@ -407,7 +407,7 @@
             });
             
             message += `\n━━━━━━━━━━━━━━━\n`;
-            message += `Bu işlemleri ne karşılığında yaparsın?`;
+            message += `Bu işlemler karşılığında ne istersin?`;
 
             // Copy to Clipboard
             try {
