@@ -309,7 +309,7 @@
             { id: 8, title: "Siren", icon: "fa-bullhorn", color: "text-red-500" },
             { id: 9, title: "Araba Kopyalama", icon: "fa-copy", color: "text-purple-400" },
             { id: 10, title: "Çizim & Logo Kopyalama", icon: "fa-paint-brush", color: "text-pink-400" },
-            { id: 11, title: "Özel ID (logo kopyalanacak arabana bir çıkartma olmaması lazım yoksa üstündekiler silinir", icon: "fa-fingerprint", color: "text-cyan-400" },
+            { id: 11, title: "Özel ID (logo kopyalanacak arabada bir çıkartma olmaması lazım yoksa üstündekiler silinir)", icon: "fa-fingerprint", color: "text-cyan-400" },
             { id: 12, title: "Premium Jant Takma", icon: "fa-dharmachakra", color: "text-indigo-400" }
         ];
 
