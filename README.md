@@ -176,16 +176,16 @@
         const services = [
             { id: 1, title: "Coin & Para", icon: "fa-coins", color: "text-yellow-400", description: "hesabıza istediğiniz kadar coin yapılır. 500kMax", price: "50₺" },
             { id: 2, title: "King Rank", icon: "fa-crown", color: "text-yellow-300", description: "hesabınız kısa süre içinde king rank yapılır", price: "100₺" },
-            { id: 3, title: "Tampon Sökme", icon: "fa-car-crash", color: "text-red-400", description: "istediğiniz bir arabanın ön-arka tamponu sökülür NOT!:her arabaya olmaz", price: "20" },
-            { id: 4, title: "KROM: Far, Kaliper, Cam, Çakar, Araba, Jant", icon: "fa-spray-can", color: "text-gray-300", description: "NOT!: her renk far krom yapılmaz", price: "20" },
-            { id: 5, title: "Gövde Kiti", icon: "fa-car-side", color: "text-blue-400", description: "her hangi bir arabadaki istediğiniz bir parça arabanıza takılır (anten dahil) NOT!: her parça her arabaya takılmaz ", price: "20" },
-            { id: 6, title: "HP: 99, 300, 324, 400, 414, 925, 1695", icon: "fa-tachometer-alt", color: "text-green-400", description: "arabanıza istediğiniz hp yapılır", price: "20" },
-            { id: 7, title: "SANZIMAN: 1E-20, 1E-30", icon: "fa-cogs", color: "text-orange-400", description: "arabanız 1E-20 şanzımanla dahada hızlanacak", price: "20" },
-            { id: 8, title: "Siren", icon: "fa-bullhorn", color: "text-red-500", description: "istediğiniz bütün arabalara siren takılır", price: "20" },
-            { id: 9, title: "Araba Kopyalama", icon: "fa-copy", color: "text-purple-400", description: "bir arabadan birden fazla arkadaşlarınıza verebilirsiniz", price: "20" },
-            { id: 10, title: "Çizim & Logo Kopyalama", icon: "fa-paint-brush", color: "text-pink-400", description: "mesela bir sanatçı çizimi bütün arabalara koyulabilir", price: "50" },
-            { id: 11, title: "Özel ID", icon: "fa-fingerprint", color: "text-cyan-400", description: "ID'nizin karışık rakam ve harflerden olmasından bıkmadınızmı neden isminizi yazdırmıyorsunuz", price: "50" },
-            { id: 12, title: "premium kıyafet alma", icon: "fa-dharmachakra", color: "text-indigo-400", description: "karakterinize kıyafet alcaksınız ama kıyafet kilitlimi onu sizin için alabiliriz", price: "20" }
+            { id: 3, title: "Tampon Sökme", icon: "fa-car-crash", color: "text-red-400", description: "istediğiniz bir arabanın ön-arka tamponu sökülür NOT!:her arabaya olmaz", price: "20₺" },
+            { id: 4, title: "KROM: Far, Kaliper, Cam, Çakar, Araba, Jant", icon: "fa-spray-can", color: "text-gray-300", description: "NOT!: her renk far krom yapılmaz", price: "20₺" },
+            { id: 5, title: "Gövde Kiti", icon: "fa-car-side", color: "text-blue-400", description: "her hangi bir arabadaki istediğiniz bir parça arabanıza takılır (anten dahil) NOT!: her parça her arabaya takılmaz ", price: "20₺" },
+            { id: 6, title: "HP: 99, 300, 324, 400, 414, 925, 1695", icon: "fa-tachometer-alt", color: "text-green-400", description: "arabanıza istediğiniz hp yapılır", price: "20₺" },
+            { id: 7, title: "SANZIMAN: 1E-20, 1E-30", icon: "fa-cogs", color: "text-orange-400", description: "arabanız 1E-20 şanzımanla dahada hızlanacak", price: "20₺" },
+            { id: 8, title: "Siren", icon: "fa-bullhorn", color: "text-red-500", description: "istediğiniz bütün arabalara siren takılır", price: "20₺" },
+            { id: 9, title: "Araba Kopyalama", icon: "fa-copy", color: "text-purple-400", description: "bir arabadan birden fazla arkadaşlarınıza verebilirsiniz", price: "20₺" },
+            { id: 10, title: "Çizim & Logo Kopyalama", icon: "fa-paint-brush", color: "text-pink-400", description: "mesela bir sanatçı çizimi bütün arabalara koyulabilir", price: "50₺" },
+            { id: 11, title: "Özel ID", icon: "fa-fingerprint", color: "text-cyan-400", description: "ID'nizin karışık rakam ve harflerden olmasından bıkmadınızmı neden isminizi yazdırmıyorsunuz", price: "50₺" },
+            { id: 12, title: "premium kıyafet alma", icon: "fa-dharmachakra", color: "text-indigo-400", description: "karakterinize kıyafet alcaksınız ama kıyafet kilitlimi onu sizin için alabiliriz", price: "20₺" }
         ]; // ← BU SATIR EKSİKTİ: ]; kapanış
 
         let selectedServices = new Set();
