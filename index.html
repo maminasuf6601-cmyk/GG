@@ -2,327 +2,1840 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAMİ01 GG İŞLEMLERİ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Muzo'nun Yaramazlık Planı</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: #0f0c29;
-            overflow-x: hidden;
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
         }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .bg-animate {
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -2;
-        }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .particles {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
+            background-color: #1a2e1a;
+            font-family: 'Inter', sans-serif;
         }
-        .particle {
-            position: absolute;
-            width: 4px; height: 4px;
-            background: rgba(139, 92, 246, 0.5);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+        .font-game {
+            font-family: 'Fredoka', sans-serif;
         }
-        @keyframes float {
-            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes pulse-danger {
+            0%, 100% { box-shadow: inset 0 0 30px rgba(239, 68, 68, 0.0); }
+            50% { box-shadow: inset 0 0 60px rgba(239, 68, 68, 0.55); }
         }
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-            border-color: rgba(139, 92, 246, 0.5);
-            box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.4);
-        }
-        .glass-card.selected {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3));
-            border-color: rgba(139, 92, 246, 0.8);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
-        }
-        .custom-checkbox {
-            appearance: none;
-            width: 24px; height: 24px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .chase-vignette {
+            animation: pulse-danger 1s infinite;
             pointer-events: none;
         }
-        .glass-card.selected .custom-checkbox {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            border-color: transparent;
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        .glass-card.selected .custom-checkbox::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 14px;
+        .modal-pop {
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .neon-text {
-            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5),
-                         0 0 20px rgba(139, 92, 246, 0.3),
-                         0 0 30px rgba(59, 130, 246, 0.3);
+        .joystick-base {
+            background: rgba(255, 255, 255, 0.18);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(4px);
         }
-        .btn-pulse {
-            animation: pulse-glow 2s infinite;
+        .joystick-stick {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        .action-btn {
+            transition: transform 0.08s ease, background-color 0.15s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.35);
         }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f0c29; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #8b5cf6, #3b82f6); 
-            border-radius: 4px;
+        .action-btn:active, .action-btn.active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.35);
         }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col items-center pb-20">
+<body class="relative w-screen h-screen overflow-hidden">
 
-    <div class="bg-animate"></div>
-    <div class="particles" id="particles"></div>
+    <!-- Oyun Alanı (Canvas) -->
+    <canvas id="gameCanvas"></canvas>
 
-    <header class="w-full max-w-4xl px-4 pt-10 pb-6 text-center relative z-10">
-        <div class="inline-block mb-2 px-4 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-bold tracking-widest uppercase">
-            Premium Services
-        </div>
-        <h1 class="text-5xl md:text-7xl font-black font-orbitron mb-4 tracking-tighter glitch neon-text" data-text="MAMİ01">
-            MAMİ01
-        </h1>
-        <h2 class="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 tracking-widest uppercase">
-            GG İŞLEMLERİ
-        </h2>
-        <p class="mt-4 text-gray-400 text-sm md:text-base max-w-lg mx-auto">
-            İhtiyacınız olan işlemleri seçin, otomatik olarak DM için hazırlansın.
-        </p>
-    </header>
+    <!-- Kovalamaca Kırmızı Ekran Efekti -->
+    <div id="chaseOverlay" class="fixed inset-0 hidden chase-vignette z-10"></div>
 
-    <main class="w-full max-w-3xl px-4 relative z-10 space-y-4">
-        
-        <div id="service-list" class="space-y-3">
-        </div>
-
-        <div class="mt-8 sticky bottom-6 z-50">
-            <div class="glass-card rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-purple-500/50 shadow-[0_0_50px_rgba(139,92,246,0.3)]">
-                <div class="text-center md:text-left">
-                    <p class="text-gray-400 text-sm uppercase tracking-wider">Seçilen İşlem</p>
-                    <p id="selected-count" class="text-2xl font-bold text-white font-orbitron">0 ADET</p>
+    <!-- Üst Bilgi Paneli (HUD) -->
+    <div id="hud" class="fixed top-0 left-0 right-0 p-3 sm:p-4 flex flex-wrap items-start justify-between gap-2 z-20 pointer-events-none">
+        <div class="flex flex-col gap-2 max-w-[68%] sm:max-w-md">
+            <div class="bg-slate-900/85 backdrop-blur-md border border-slate-700/80 text-white px-3.5 py-2 rounded-2xl shadow-lg flex items-center gap-2.5">
+                <span id="missionIcon" class="text-xl sm:text-2xl">🤫</span>
+                <div>
+                    <div class="text-[10px] sm:text-xs uppercase tracking-wider text-amber-400 font-bold">Mevcut Görev</div>
+                    <div id="missionText" class="font-game text-sm sm:text-base font-semibold leading-tight">Melih'e görünmeden ahıra sız!</div>
                 </div>
-                
-                <button onclick="submitOrder()" class="group relative w-full md:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl font-bold text-lg uppercase tracking-wider overflow-hidden transition-all hover:scale-105 btn-pulse">
-                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <span class="relative flex items-center justify-center gap-2">
-                        <i class="fab fa-instagram"></i>
-                        DM Gönder
-                    </span>
-                </button>
+            </div>
+
+            <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700/70 px-3 py-1.5 rounded-xl shadow-md flex items-center gap-2 w-48 sm:w-56">
+                <span class="text-xs font-bold text-sky-300">⚡ Enerji</span>
+                <div class="flex-1 h-2.5 bg-slate-700 rounded-full overflow-hidden">
+                    <div id="staminaBar" class="h-full bg-gradient-to-r from-sky-400 to-emerald-400 w-full transition-all duration-75"></div>
+                </div>
             </div>
         </div>
 
-    </main>
-
-    <div id="success-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="glass-card rounded-3xl p-8 max-w-sm w-full text-center relative transform scale-90 opacity-0 transition-all duration-300" id="modal-content">
-            <h3 class="text-2xl font-bold text-white mb-2 font-orbitron">Hazır!</h3>
-            <p class="text-gray-300 mb-6">Seçtiğiniz işlemler panoya kopyalandı. Instagram DM'e yönlendiriliyorsunuz...</p>
-            <div class="w-full bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-500 to-blue-500 h-1.5 rounded-full" style="width: 0%" id="progress-bar"></div>
+        <div class="flex items-center gap-2 pointer-events-auto">
+            <div id="stealthBadge" class="bg-emerald-950/90 border border-emerald-500/50 text-emerald-300 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-md flex items-center gap-1.5">
+                <span id="stealthDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="stealthText">Gizli</span>
             </div>
+
+            <button id="muteBtn" class="bg-slate-900/85 hover:bg-slate-800 border border-slate-700 text-white p-2.5 rounded-xl shadow-md active:scale-95 transition" title="Sesi Aç/Kapat">
+                <span id="muteIcon" class="text-lg leading-none">🔊</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Ortada Çıkan Uyarı / Etkileşim İpucu -->
+    <div id="promptBanner" class="fixed top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none hidden">
+        <div id="promptText" class="bg-amber-500 text-slate-950 font-game font-bold px-4 py-2 rounded-full shadow-xl border-2 border-amber-200 text-sm sm:text-base whitespace-nowrap animate-bounce">
+            🔥 Ahırı yakmak için [E] veya [BOŞLUK] tuşuna basılı tut!
+        </div>
+    </div>
+
+    <!-- Mobil & Dokunmatik Kontroller -->
+    <div id="touchControls" class="fixed inset-x-0 bottom-0 p-4 sm:p-6 flex items-end justify-between z-20 pointer-events-none">
+        <div id="joystickZone" class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full joystick-base pointer-events-auto flex items-center justify-center">
+            <div id="joystickStick" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full joystick-stick pointer-events-none"></div>
+        </div>
+
+        <div class="flex items-end gap-3 pointer-events-auto">
+            <button id="btnSprint" class="action-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-sky-500 hover:bg-sky-400 border-2 border-sky-200 text-white font-game font-bold flex flex-col items-center justify-center shadow-lg">
+                <span class="text-xl sm:text-2xl">👟</span>
+                <span class="text-[11px] sm:text-xs">KOŞ</span>
+            </button>
+
+            <button id="btnIgnite" class="action-btn w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-orange-600 hover:bg-orange-500 border-2 border-orange-200 text-white font-game font-bold flex flex-col items-center justify-center shadow-lg opacity-50">
+                <span class="text-2xl sm:text-3xl">🔥</span>
+                <span class="text-xs sm:text-sm">YAK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Başlangıç & Oyun Sonu Modal Ekranı -->
+    <div id="gameModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-30 flex items-center justify-center p-4">
+        <div class="modal-pop bg-slate-900 border-2 border-slate-700 rounded-3xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl text-white">
+            <div id="modalEmoji" class="text-5xl sm:text-6xl mb-3">😈🔥🐄</div>
+            <h1 id="modalTitle" class="font-game text-2xl sm:text-3xl font-bold text-amber-400 mb-2">Muzo'nun Yaramazlık Planı</h1>
+            <p id="modalDesc" class="text-slate-300 text-sm sm:text-base leading-relaxed mb-5">
+                Sen köyün en şımarık çocuğu <strong class="text-amber-300">Muzo</strong>'sun! Büyüyen köyde ilerideki <strong class="text-rose-400">Melih</strong>'in evinin yanındaki 10 inekli ahıra gizlice sız, kibriti çakıp ahırı yak ve inekler sağa sola kaçışırken Melih seni yakalamadan güvenli bölgeye kaç!
+            </p>
+
+            <div id="controlsGuide" class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 mb-6 text-left text-xs sm:text-sm text-slate-300 space-y-1.5">
+                <div class="flex items-center gap-2"><span class="text-base">🕹️</span> <span><strong>Hareket:</strong> WASD / Yön Tuşları (veya Sol Joystick)</span></div>
+                <div class="flex items-center gap-2"><span class="text-base">🌿</span> <span><strong>Gizlenme:</strong> Çalılara girerek Melih'in gözünden kaybol</span></div>
+                <div class="flex items-center gap-2"><span class="text-base">🔥</span> <span><strong>Ahırı Yak:</strong> Ahırın yanında <strong>E / Boşluk</strong> (veya YAK butonu) basılı tut</span></div>
+                <div class="flex items-center gap-2"><span class="text-base">👟</span> <span><strong>Hızlı Koş:</strong> <strong>Shift</strong> tuşu (veya KOŞ butonu)</span></div>
+            </div>
+
+            <button id="startBtn" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-game font-bold text-lg sm:text-xl shadow-lg shadow-orange-600/30 active:scale-95 transition cursor-pointer">
+                Oyuna Başla!
+            </button>
         </div>
     </div>
 
     <script>
-        const services = [
-            { id: 1, title: "Coin & Para", icon: "fa-coins", color: "text-yellow-400", description: "hesabıza istediğiniz kadar coin yapılır. 500kMax", price: "50₺" },
-            { id: 2, title: "King Rank", icon: "fa-crown", color: "text-yellow-300", description: "hesabınız kısa süre içinde king rank yapılır", price: "100₺" },
-            { id: 3, title: "Tampon Sökme", icon: "fa-car-crash", color: "text-red-400", description: "istediğiniz bir arabanın ön-arka tamponu sökülür NOT!:her arabaya olmaz", price: "20₺" },
-            { id: 4, title: "KROM: Far, Kaliper, Cam, Çakar, Araba, Jant", icon: "fa-spray-can", color: "text-gray-300", description: "NOT!: her renk far krom yapılmaz", price: "20₺" },
-            { id: 5, title: "Gövde Kiti", icon: "fa-car-side", color: "text-blue-400", description: "her hangi bir arabadaki istediğiniz bir parça arabanıza takılır (anten dahil) NOT!: her parça her arabaya takılmaz ", price: "20₺" },
-            { id: 6, title: "HP: 99, 300, 324, 400, 414, 925, 1695", icon: "fa-tachometer-alt", color: "text-green-400", description: "arabanıza istediğiniz hp yapılır", price: "20₺" },
-            { id: 7, title: "SANZIMAN: 1E-20, 1E-30", icon: "fa-cogs", color: "text-orange-400", description: "arabanız 1E-20 şanzımanla dahada hızlanacak", price: "20₺" },
-            { id: 8, title: "Siren", icon: "fa-bullhorn", color: "text-red-500", description: "istediğiniz bütün arabalara siren takılır", price: "20" },
-            { id: 9, title: "Araba Kopyalama", icon: "fa-copy", color: "text-purple-400", description: "bir arabadan birden fazla arkadaşlarınıza verebilirsiniz", price: "20₺" },
-            { id: 10, title: "Çizim & Logo Kopyalama", icon: "fa-paint-brush", color: "text-pink-400", description: "mesela bir sanatçı çizimi bütün arabalara koyulabilir", price: "50₺" },
-            { id: 11, title: "Özel ID", icon: "fa-fingerprint", color: "text-cyan-400", description: "ID'nizin karışık rakam ve harflerden olmasından bıkmadınızmı neden isminizi yazdırmıyorsunuz", price: "50₺" },
-            { id: 12, title: "premium kıyafet alma", icon: "fa-dharmachakra", color: "text-indigo-400", description: "karakterinize kıyafet alcaksınız ama kıyafet kilitlimi onu sizin için alabiliriz", price: "20₺" }
-        ]; // ← BU SATIR EKSİKTİ: ]; kapanış
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        let selectedServices = new Set();
+        const gameModal = document.getElementById('gameModal');
+        const modalEmoji = document.getElementById('modalEmoji');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const controlsGuide = document.getElementById('controlsGuide');
+        const startBtn = document.getElementById('startBtn');
+        const missionIcon = document.getElementById('missionIcon');
+        const missionText = document.getElementById('missionText');
+        const staminaBar = document.getElementById('staminaBar');
+        const stealthBadge = document.getElementById('stealthBadge');
+        const stealthDot = document.getElementById('stealthDot');
+        const stealthText = document.getElementById('stealthText');
+        const promptBanner = document.getElementById('promptBanner');
+        const promptText = document.getElementById('promptText');
+        const chaseOverlay = document.getElementById('chaseOverlay');
+        const muteBtn = document.getElementById('muteBtn');
+        const muteIcon = document.getElementById('muteIcon');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderServices();
-            createParticles();
+        const joystickZone = document.getElementById('joystickZone');
+        const joystickStick = document.getElementById('joystickStick');
+        const btnSprint = document.getElementById('btnSprint');
+        const btnIgnite = document.getElementById('btnIgnite');
+
+        // ==========================================
+        // WEB AUDIO API İLE SENTEZLENMİŞ SES EFEKTLERİ
+        // ==========================================
+        class SoundEffects {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+                this.stepTimer = 0;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            toggleMute() {
+                this.muted = !this.muted;
+                muteIcon.textContent = this.muted ? '🔇' : '🔊';
+            }
+
+            playStep(isRunning) {
+                if (this.muted || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                const baseFreq = isRunning ? 140 : 105;
+                osc.frequency.setValueAtTime(baseFreq + Math.random() * 25, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.06);
+
+                gain.gain.setValueAtTime(isRunning ? 0.08 : 0.04, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.06);
+            }
+
+            playMatchStrike() {
+                if (this.muted || !this.ctx) return;
+                const bufferSize = this.ctx.sampleRate * 0.08;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 1200;
+
+                const gain = this.ctx.createGain();
+                gain.gain.value = 0.12;
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start();
+            }
+
+            playMoo() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                const pitch = 95 + Math.random() * 35;
+                osc.frequency.setValueAtTime(pitch, now);
+                osc.frequency.linearRampToValueAtTime(pitch * 1.18, now + 0.18);
+                osc.frequency.linearRampToValueAtTime(pitch * 0.85, now + 0.55);
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 420;
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.09, now + 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+
+            playAlert() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.linearRampToValueAtTime(640, now + 0.15);
+                osc.frequency.linearRampToValueAtTime(480, now + 0.35);
+
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+
+            playCaught() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const notes = [300, 250, 190, 130];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                    gain.gain.setValueAtTime(0.15, now + idx * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (idx + 1) * 0.12);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.12);
+                    osc.stop(now + (idx + 1) * 0.12);
+                });
+            }
+
+            playVictory() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                    gain.gain.setValueAtTime(0.16, now + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.1);
+                    osc.stop(now + idx * 0.1 + 0.3);
+                });
+            }
+        }
+
+        const sfx = new SoundEffects();
+        muteBtn.addEventListener('click', () => sfx.toggleMute());
+
+        // ==========================================
+        // BÜYÜTÜLMÜŞ KÖY DÜNYASI (2600 x 1850)
+        // ==========================================
+        const WORLD = {
+            width: 2600,
+            height: 1850
+        };
+
+        let gameState = 'MENU';
+        let lastTime = 0;
+        let screenShake = 0;
+
+        const camera = { x: 0, y: 0 };
+
+        const keys = {};
+        const touchInput = {
+            dx: 0,
+            dy: 0,
+            sprint: false,
+            ignite: false
+        };
+
+        // Oyuncu: Muzo
+        const muzo = {
+            x: 190,
+            y: 1560,
+            radius: 17,
+            baseSpeed: 195,
+            sprintSpeed: 320,
+            stamina: 100,
+            maxStamina: 100,
+            exhausted: false,
+            angle: -0.5,
+            walkAnim: 0,
+            inBush: false,
+            speech: '',
+            speechTimer: 0
+        };
+
+        // Düşman: Ev Sahibi Melih
+        const melih = {
+            x: 1620,
+            y: 780,
+            radius: 20,
+            patrolSpeed: 132,
+            chaseSpeed: 260,
+            angle: Math.PI,
+            visionRange: 270,
+            visionAngle: Math.PI / 3.2,
+            walkAnim: 0,
+            state: 'PATROL',
+            waypointIndex: 0,
+            waitTimer: 0,
+            speech: '',
+            speechTimer: 0,
+            waypoints: [
+                { x: 1620, y: 780, wait: 1.1 },
+                { x: 2150, y: 760, wait: 1.0 },
+                { x: 2240, y: 1140, wait: 1.2 },
+                { x: 1720, y: 1220, wait: 1.0 },
+                { x: 1240, y: 1020, wait: 1.2 },
+                { x: 1380, y: 620, wait: 1.0 }
+            ]
+        };
+
+        // Güvenli Bölge (Köy Girişi)
+        const safeZone = {
+            x: 60,
+            y: 1410,
+            width: 270,
+            height: 290,
+            label: "GÜVENLİ BÖLGE (KAÇIŞ)"
+        };
+
+        // Hedef Ahır (10 İnekli Büyük Ahır)
+        const barn = {
+            x: 2060,
+            y: 170,
+            width: 300,
+            height: 210,
+            igniteRadius: 85,
+            burnProgress: 0,
+            isBurning: false,
+            matchTick: 0
+        };
+
+        // Melih'in Evi
+        const house = {
+            x: 1580,
+            y: 170,
+            width: 290,
+            height: 210
+        };
+
+        // Köydeki Diğer Evler (10 Adet Köy Evi & Yapı)
+        const villageHouses = [
+            { x: 160, y: 200, w: 230, h: 170, roof: '#2563eb', wall: '#f8fafc', label: "DEMİRCİ EVİ" },
+            { x: 560, y: 170, w: 245, h: 175, roof: '#d97706', wall: '#fef3c7', label: "MUHTAR EVİ" },
+            { x: 1020, y: 180, w: 235, h: 170, roof: '#0d9488', wall: '#f0fdfa', label: "KAHVEHANE" },
+            { x: 210, y: 620, w: 225, h: 165, roof: '#059669', wall: '#f1f5f9', label: "FIRIN" },
+            { x: 640, y: 660, w: 230, h: 170, roof: '#ea580c', wall: '#fff7ed', label: "BAKKAL" },
+            { x: 240, y: 1030, w: 220, h: 160, roof: '#0284c7', wall: '#f0f9ff', label: "TERZİ EVİ" },
+            { x: 740, y: 1380, w: 255, h: 180, roof: '#7c3aed', wall: '#f8fafc', label: "KÖY EVİ" },
+            { x: 1280, y: 1450, w: 245, h: 175, roof: '#db2777', wall: '#fef2f2', label: "ÇOBAN EVİ" },
+            { x: 1820, y: 1430, w: 255, h: 180, roof: '#4f46e5', wall: '#f1f5f9', label: "DEPO EVİ" },
+            { x: 2210, y: 1390, w: 240, h: 175, roof: '#16a34a', wall: '#f0fdf4', label: "BAĞ EVİ" }
+        ];
+
+        let obstacles = []        let bushes = [];
+        let trees = [];
+        let cows = [];
+        let groundDetails = [];
+        let particles = [];
+
+        function createCows() {
+            cows = [];
+            // Ahırın hemen önündeki/yanındaki açık ahır avlusu ve bölmelerinde 10 inek
+            const cowSpots = [
+                { x: 2095, y: 415 },
+                { x: 2150, y: 425 },
+                { x: 2205, y: 415 },
+                { x: 2260, y: 425 },
+                { x: 2315, y: 415 },
+                { x: 2105, y: 475 },
+                { x: 2160, y: 485 },
+                { x: 2215, y: 475 },
+                { x: 2270, y: 485 },
+                { x: 2325, y: 475 }
+            ];
+
+            cowSpots.forEach((spot, idx) => {
+                cows.push({
+                    id: idx + 1,
+                    x: spot.x,
+                    y: spot.y,
+                    homeX: spot.x,
+                    homeY: spot.y,
+                    radius: 15,
+                    angle: Math.PI / 2 + (Math.random() - 0.5) * 0.8,
+                    walkAnim: Math.random() * Math.PI * 2,
+                    idleTimer: 0.5 + Math.random() * 2.5,
+                    targetX: spot.x,
+                    targetY: spot.y,
+                    panicking: false,
+                    panicVx: 0,
+                    panicVy: 0,
+                    mooBubble: '',
+                    mooTimer: 0,
+                    spotSeed: idx * 1.7
+                });
+            });
+        }
+
+        function buildVillage() {
+            obstacles = [
+                // Melih'in Evi ve Ahır
+                { x: house.x, y: house.y, w: house.width, h: house.height, type: 'house' },
+                { x: barn.x, y: barn.y, w: barn.width, h: barn.height, type: 'barn' },
+
+                // Diğer Köy Evleri
+                ...villageHouses.map(vh => ({
+                    x: vh.x,
+                    y: vh.y,
+                    w: vh.w,
+                    h: vh.h,
+                    type: 'villageHouse',
+                    roof: vh.roof,
+                    wall: vh.wall,
+                    label: vh.label
+                })),
+
+                // Saman Balyaları (Siper ve engel)
+                { x: 1580, y: 920, w: 72, h: 50, type: 'hay' },
+                { x: 1665, y: 935, w: 62, h: 50, type: 'hay' },
+                { x: 1120, y: 580, w: 70, h: 50, type: 'hay' },
+                { x: 1920, y: 600, w: 74, h: 50, type: 'hay' },
+                { x: 2200, y: 980, w: 76, h: 52, type: 'hay' },
+                { x: 560, y: 1120, w: 68, h: 48, type: 'hay' },
+                { x: 1180, y: 1240, w: 72, h: 50, type: 'hay' },
+                { x: 1840, y: 1180, w: 68, h: 48, type: 'hay' },
+                { x: 880, y: 940, w: 66, h: 48, type: 'hay' },
+
+                // Köy Çitleri
+                { x: 490, y: 1140, w: 18, h: 270, type: 'fence' },
+                { x: 490, y: 1140, w: 180, h: 18, type: 'fence' },
+                { x: 1380, y: 190, w: 18, h: 220, type: 'fence' },
+                { x: 1120, y: 1660, w: 420, h: 18, type: 'fence' },
+                { x: 1860, y: 710, w: 300, h: 18, type: 'fence' },
+                { x: 490, y: 460, w: 240, h: 18, type: 'fence' },
+
+                // Köy Meydanı ve Mahalle Su Kuyuları
+                { x: 1020, y: 840, w: 62, h: 62, type: 'well' },
+                { x: 510, y: 550, w: 54, h: 54, type: 'well' },
+                { x: 1740, y: 1050, w: 54, h: 54, type: 'well' }
+            ];
+
+            // Saklanma Çalıları
+            bushes = [
+                { x: 410, y: 1240, r: 46 },
+                { x: 620, y: 960, r: 48 },
+                { x: 880, y: 740, r: 48 },
+                { x: 1240, y: 860, r: 50 },
+                { x: 1480, y: 1120, r: 48 },
+                { x: 1820, y: 880, r: 50 },
+                { x: 1980, y: 630, r: 46 },
+                { x: 1760, y: 500, r: 44 },
+                { x: 1290, y: 460, r: 46 },
+                { x: 860, y: 420, r: 48 },
+                { x: 440, y: 380, r: 48 },
+                { x: 180, y: 480, r: 46 },
+                { x: 560, y: 1560, r: 48 },
+                { x: 1120, y: 1580, r: 48 },
+                { x: 1660, y: 1620, r: 50 },
+                { x: 2120, y: 1620, r: 48 },
+                { x: 2420, y: 920, r: 50 },
+                { x: 2450, y: 430, r: 46 }
+            ];
+
+            // Dekoratif Köy Ağaçları
+            trees = [
+                { x: 110, y: 110, r: 42 },
+                { x: 470, y: 100, r: 38 },
+                { x: 920, y: 95, r: 40 },
+                { x: 1480, y: 90, r: 44 },
+                { x: 2475, y: 140, r: 46 },
+                { x: 2480, y: 660, r: 42 },
+                { x: 2490, y: 1220, r: 45 },
+                { x: 2470, y: 1720, r: 44 },
+                { x: 1960, y: 1740, r: 40 },
+                { x: 880, y: 1730, r: 42 },
+                { x: 420, y: 1740, r: 38 },
+                { x: 110, y: 880, r: 40 }
+            ];
+
+            createCows();
+
+            // Zemin detayları
+            groundDetails = [];
+            for (let i = 0; i < 260; i++) {
+                groundDetails.push({
+                    x: Math.random() * WORLD.width,
+                    y: Math.random() * WORLD.height,
+                    type: Math.random() > 0.35 ? 'grass' : 'flower',
+                    color: Math.random() > 0.5 ? '#fde047' : '#f87171',
+                    size: 3 + Math.random() * 4
+                });
+            }
+        }
+
+        function resetGame() {
+            buildVillage();
+            particles = [];
+            screenShake = 0;
+
+            muzo.x = 190;
+            muzo.y = 1560;
+            muzo.stamina = 100;
+            muzo.exhausted = false;
+            muzo.angle = -Math.PI / 4;
+            muzo.inBush = false;
+            muzo.speech = "Ahır ineklerle dolu! Haydi oraya!";
+            muzo.speechTimer = 3.2;
+
+            melih.x = 1620;
+            melih.y = 780;
+            melih.waypointIndex = 0;
+            melih.waitTimer = 0.5;
+            melih.state = 'PATROL';
+            melih.speech = "İnekler ve ahır güvende...";
+            melih.speechTimer = 2.5;
+
+            barn.burnProgress = 0;
+            barn.isBurning = false;
+
+            gameState = 'STEALTH';
+            chaseOverlay.classList.add('hidden');
+            updateHUD();
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        window.addEventListener('keydown', (e) => {
+            keys[e.code] = true;
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+                e.preventDefault();
+            }
         });
 
-        function renderServices() {
-            const container = document.getElementById('service-list');
-            container.innerHTML = services.map(service => `
-                <div onclick="toggleService(${service.id})" 
-                     class="glass-card rounded-xl p-4 cursor-pointer flex items-center gap-4 group select-none ${selectedServices.has(service.id) ? 'selected' : ''}"
-                     id="service-${service.id}">
-                    
-                    <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-purple-500/50 transition-colors flex-shrink-0">
-                        <i class="fas ${service.icon} ${service.color} text-xl"></i>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-lg text-white group-hover:text-purple-300 transition-colors">${service.title}</h3>
-                        <p class="text-sm text-gray-500 mt-1 group-hover:text-gray-400 transition-colors">${service.description}</p>
-                    </div>
-                    
-                    <div class="flex-shrink-0 flex flex-col items-end gap-1">
-                        <div class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-sm font-bold text-white/80 min-w-[60px] text-center">
-                            ${service.price}
-                        </div>
-                        <div class="relative">
-                            <div class="custom-checkbox"></div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
+        window.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+        });
 
-        function toggleService(id) {
-            const element = document.getElementById(`service-${id}`);
-            if (selectedServices.has(id)) {
-                selectedServices.delete(id);
-                element.classList.remove('selected');
-            } else {
-                selectedServices.add(id);
-                element.classList.add('selected');
+        // Sanal Joystick
+        let joystickActive = false;
+        let joystickTouchId = null;
+
+        function handleJoystickMove(clientX, clientY) {
+            const rect = joystickZone.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const maxRadius = rect.width / 2 - 16;
+
+            let dx = clientX - centerX;
+            let dy = clientY - centerY;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist > maxRadius) {
+                dx = (dx / dist) * maxRadius;
+                dy = (dy / dist) * maxRadius;
             }
-            updateCounter();
+
+            joystickStick.style.transform = `translate(${dx}px, ${dy}px)`;
+            touchInput.dx = dx / maxRadius;
+            touchInput.dy = dy / maxRadius;
         }
 
-        function updateCounter() {
-            const count = selectedServices.size;
-            const counterEl = document.getElementById('selected-count');
-            counterEl.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                counterEl.innerText = `${count} ADET`;
-                counterEl.style.transform = 'scale(1)';
-            }, 100);
+        function resetJoystick() {
+            joystickActive = false;
+            joystickTouchId = null;
+            joystickStick.style.transform = `translate(0px, 0px)`;
+            touchInput.dx = 0;
+            touchInput.dy = 0;
         }
 
-        async function submitOrder() {
-            if (selectedServices.size === 0) {
-                const btn = document.querySelector('button');
-                btn.classList.add('animate-bounce');
-                setTimeout(() => btn.classList.remove('animate-bounce'), 1000);
+        joystickZone.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.changedTouches[0];
+            joystickActive = true;
+            joystickTouchId = touch.identifier;
+            handleJoystickMove(touch.clientX, touch.clientY);
+        }, { passive: false });
+
+        joystickZone.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                if (e.changedTouches[i].identifier === joystickTouchId) {
+                    handleJoystickMove(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+                }
+            }
+        }, { passive: false });
+
+        joystickZone.addEventListener('touchend', (e) => {
+            for (let i = 0; i < e.changedTouches.length; i++) {
+                if (e.changedTouches[i].identifier === joystickTouchId) {
+                    resetJoystick();
+                }
+            }
+        });
+        joystickZone.addEventListener('touchcancel', resetJoystick);
+
+        joystickZone.addEventListener('mousedown', (e) => {
+            joystickActive = true;
+            handleJoystickMove(e.clientX, e.clientY);
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (joystickActive && joystickTouchId === null) {
+                handleJoystickMove(e.clientX, e.clientY);
+            }
+        });
+        window.addEventListener('mouseup', () => {
+            if (joystickActive && joystickTouchId === null) {
+                resetJoystick();
+            }
+        });
+
+        const bindHoldButton = (btn, prop) => {
+            const start = (e) => {
+                e.preventDefault();
+                touchInput[prop] = true;
+                btn.classList.add('active');
+            };
+            const end = (e) => {
+                e.preventDefault();
+                touchInput[prop] = false;
+                btn.classList.remove('active');
+            };
+            btn.addEventListener('touchstart', start, { passive: false });
+            btn.addEventListener('touchend', end);
+            btn.addEventListener('touchcancel', end);
+            btn.addEventListener('mousedown', start);
+            btn.addEventListener('mouseup', end);
+            btn.addEventListener('mouseleave', end);
+        };
+
+        bindHoldButton(btnSprint, 'sprint');
+        bindHoldButton(btnIgnite, 'ignite');
+
+        startBtn.addEventListener('click', () => {
+            sfx.init();
+            gameModal.classList.add('hidden');
+            resetGame();
+        });
+
+        function resolveCircleObstacles(entity) {
+            entity.x = Math.max(entity.radius + 15, Math.min(WORLD.width - entity.radius - 15, entity.x));
+            entity.y = Math.max(entity.radius + 15, Math.min(WORLD.height - entity.radius - 15, entity.y));
+
+            for (const obs of obstacles) {
+                const closestX = Math.max(obs.x, Math.min(entity.x, obs.x + obs.w));
+                const closestY = Math.max(obs.y, Math.min(entity.y, obs.y + obs.h));
+                const dx = entity.x - closestX;
+                const dy = entity.y - closestY;
+                const distSq = dx * dx + dy * dy;
+
+                if (distSq < entity.radius * entity.radius) {
+                    const dist = Math.sqrt(distSq) || 0.001;
+                    const overlap = entity.radius - dist;
+                    entity.x += (dx / dist) * overlap;
+                    entity.y += (dy / dist) * overlap;
+                }
+            }
+        }
+
+        function hasLineOfSight(x1, y1, x2, y2) {
+            const steps = 24;
+            for (let i = 1; i < steps; i++) {
+                const t = i / steps;
+                const px = x1 + (x2 - x1) * t;
+                const py = y1 + (y2 - y1) * t;
+                for (const obs of obstacles) {
+                    if (obs.type === 'fence') continue;
+                    if (px >= obs.x && px <= obs.x + obs.w && py >= obs.y && py <= obs.y + obs.h) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function normalizeAngle(a) {
+            while (a > Math.PI) a -= Math.PI * 2;
+            while (a < -Math.PI) a += Math.PI * 2;
+            return a;
+        }
+
+        function updateCows(dt) {
+            for (let i = 0; i < cows.length; i++) {
+                const c = cows[i];
+                if (c.mooTimer > 0) c.mooTimer -= dt;
+
+                if (c.panicking) {
+                    // Ahır yanınca inekler panikle sağa sola koşar
+                    c.x += c.panicVx * dt;
+                    c.y += c.panicVy * dt;
+                    c.angle = Math.atan2(c.panicVy, c.panicVx);
+                    c.walkAnim += dt * 15;
+
+                    if (Math.random() < 0.025) {
+                        const turn = (Math.random() - 0.5) * 1.6;
+                        const spd = Math.hypot(c.panicVx, c.panicVy);
+                        c.angle += turn;
+                        c.panicVx = Math.cos(c.angle) * spd;
+                        c.panicVy = Math.sin(c.angle) * spd;
+                    }
+
+                    // Dünya kenarlarından sekme
+                    if (c.x < 50 || c.x > WORLD.width - 50) c.panicVx *= -1;
+                    if (c.y < 50 || c.y > WORLD.height - 50) c.panicVy *= -1;
+                } else {
+                    // Normal halde ahırın önünde sakin sakin otlar/gezinir
+                    const dx = c.targetX - c.x;
+                    const dy = c.targetY - c.y;
+                    const dist = Math.hypot(dx, dy);
+
+                    if (dist < 6) {
+                        c.idleTimer -= dt;
+                        c.walkAnim = 0;
+                        if (c.idleTimer <= 0) {
+                            c.targetX = c.homeX + (Math.random() - 0.5) * 44;
+                            c.targetY = c.homeY + (Math.random() - 0.5) * 34;
+                            c.idleTimer = 1.5 + Math.random() * 2.5;
+                            if (Math.random() < 0.25) {
+                                c.mooBubble = "Mööö!";
+                                c.mooTimer = 1.6;
+                            }
+                        }
+                    } else {
+                        const ang = Math.atan2(dy, dx);
+                        c.angle = ang;
+                        c.x += Math.cos(ang) * 28 * dt;
+                        c.y += Math.sin(ang) * 28 * dt;
+                        c.walkAnim += dt * 5;
+                    }
+                }
+
+                // İneklerin birbirine çarpmaması için hafif itme
+                for (let j = i + 1; j < cows.length; j++) {
+                    const other = cows[j];
+                    const dx = c.x - other.x;
+                    const dy = c.y - other.y;
+                    const d = Math.hypot(dx, dy);
+                    const minDist = c.radius + other.radius + 4;
+                    if (d > 0 && d < minDist) {
+                        const push = (minDist - d) * 0.5;
+                        c.x += (dx / d) * push;
+                        c.y += (dy / d) * push;
+                        other.x -= (dx / d) * push;
+                        other.y -= (dy / d) * push;
+                    }
+                }
+
+                resolveCircleObstacles(c);
+            }
+        }
+
+        function update(dt) {
+            if (gameState !== 'STEALTH' && gameState !== 'CHASE') {
+                updateParticles(dt);
                 return;
             }
 
-            const selectedItems = services.filter(s => selectedServices.has(s.id));
-            const date = new Date().toLocaleDateString('tr-TR');
-            
-            let message = `🎮 MAMİ01 GG İŞLEM TALEBİ 🎮\n`;
-            message += `📅 Tarih: ${date}\n`;
-            message += `━━━━━━━━━━━━━━━\n\n`;
-            
-            selectedItems.forEach((item, index) => {
-                message += `${index + 1}. ${item.title}\n`;
+            if (screenShake > 0) screenShake = Math.max(0, screenShake - dt * 25);
+
+            let moveX = touchInput.dx;
+            let moveY = touchInput.dy;
+
+            if (keys['KeyW'] || keys['ArrowUp']) moveY -= 1;
+            if (keys['KeyS'] || keys['ArrowDown']) moveY += 1;
+            if (keys['KeyA'] || keys['ArrowLeft']) moveX -= 1;
+            if (keys['KeyD'] || keys['ArrowRight']) moveX += 1;
+
+            const inputMag = Math.hypot(moveX, moveY);
+            if (inputMag > 1) {
+                moveX /= inputMag;
+                moveY /= inputMag;
+            }
+
+            const wantsSprint = keys['ShiftLeft'] || keys['ShiftRight'] || touchInput.sprint;
+            const isMoving = inputMag > 0.1;
+            let isSprinting = false;
+
+            if (wantsSprint && isMoving && !muzo.exhausted && muzo.stamina > 0) {
+                isSprinting = true;
+                muzo.stamina = Math.max(0, muzo.stamina - 32 * dt);
+                if (muzo.stamina === 0) muzo.exhausted = true;
+            } else {
+                muzo.stamina = Math.min(muzo.maxStamina, muzo.stamina + 24 * dt);
+                if (muzo.stamina > 28) muzo.exhausted = false;
+            }
+
+            const currentSpeed = isSprinting ? muzo.sprintSpeed : muzo.baseSpeed;
+            muzo.x += moveX * currentSpeed * dt;
+            muzo.y += moveY * currentSpeed * dt;
+
+            resolveCircleObstacles(muzo);
+
+            if (isMoving) {
+                muzo.angle = Math.atan2(moveY, moveX);
+                muzo.walkAnim += dt * (isSprinting ? 16 : 10);
+
+                sfx.stepTimer -= dt;
+                if (sfx.stepTimer <= 0) {
+                    sfx.playStep(isSprinting);
+                    sfx.stepTimer = isSprinting ? 0.22 : 0.34;
+                }
+            } else {
+                muzo.walkAnim = 0;
+            }
+
+            muzo.inBush = false;
+            for (const b of bushes) {
+                if (Math.hypot(muzo.x - b.x, muzo.y - b.y) < b.r - 4) {
+                    muzo.inBush = true;
+                    break;
+                }
+            }
+
+            if (muzo.speechTimer > 0) muzo.speechTimer -= dt;
+            if (melih.speechTimer > 0) melih.speechTimer -= dt;
+
+            const distToBarn = Math.hypot(
+                muzo.x - Math.max(barn.x, Math.min(muzo.x, barn.x + barn.width)),
+                muzo.y - Math.max(barn.y, Math.min(muzo.y, barn.y + barn.height))
+            );
+
+            const nearBarn = distToBarn <= barn.igniteRadius && !barn.isBurning;
+            const wantsIgnite = keys['KeyE'] || keys['Space'] || touchInput.ignite;
+
+            if (nearBarn) {
+                promptBanner.classList.remove('hidden');
+                btnIgnite.classList.remove('opacity-50');
+                btnIgnite.classList.add('animate-pulse');
+
+                if (wantsIgnite) {
+                    barn.burnProgress = Math.min(100, barn.burnProgress + 44 * dt);
+                    barn.matchTick += dt;
+                    if (barn.matchTick > 0.25) {
+                        sfx.playMatchStrike();
+                        barn.matchTick = 0;
+                        for (let i = 0; i < 4; i++) {
+                            spawnParticle(muzo.x + Math.cos(muzo.angle) * 18, muzo.y + Math.sin(muzo.angle) * 18, 'spark');
+                        }
+                    }
+
+                    if (barn.burnProgress >= 100) {
+                        triggerBarnFire();
+                    }
+                } else {
+                    barn.burnProgress = Math.max(0, barn.burnProgress - 18 * dt);
+                }
+            } else {
+                promptBanner.classList.add('hidden');
+                btnIgnite.classList.add('opacity-50');
+                btnIgnite.classList.remove('animate-pulse');
+                if (!barn.isBurning) {
+                    barn.burnProgress = Math.max(0, barn.burnProgress - 15 * dt);
+                }
+            }
+
+            if (barn.isBurning) {
+                if (Math.random() < 0.75) {
+                    spawnParticle(
+                        barn.x + 25 + Math.random() * (barn.width - 50),
+                        barn.y + 25 + Math.random() * (barn.height - 50),
+                        'fire'
+                    );
+                }
+                if (Math.random() < 0.45) {
+                    spawnParticle(
+                        barn.x + 30 + Math.random() * (barn.width - 60),
+                        barn.y + 20 + Math.random() * (barn.height - 60),
+                        'smoke'
+                    );
+                }
+            }
+
+                     updateCows(dt);
+            updateMelih(dt);
+
+            if (gameState === 'CHASE') {
+                if (
+                    muzo.x > safeZone.x + 15 &&
+                    muzo.x < safeZone.x + safeZone.width - 15 &&
+                    muzo.y > safeZone.y + 15 &&
+                    muzo.y < safeZone.y + safeZone.height - 15
+                ) {
+                    endGame('WON');
+                }
+            }
+
+            const targetCamX = muzo.x - canvas.width / 2;
+            const targetCamY = muzo.y - canvas.height / 2;
+            camera.x += (targetCamX - camera.x) * 8 * dt;
+            camera.y += (targetCamY - camera.y) * 8 * dt;
+
+            camera.x = Math.max(0, Math.min(Math.max(0, WORLD.width - canvas.width), camera.x));
+            camera.y = Math.max(0, Math.min(Math.max(0, WORLD.height - canvas.height), camera.y));
+
+            updateParticles(dt);
+            updateHUD();
+        }
+
+        function triggerBarnFire() {
+            barn.isBurning = true;
+            gameState = 'CHASE';
+            melih.state = 'CHASE';
+            melih.speech = "Muzooo!! Ahırımı yaktın! İnekler kaçıyor!";
+            melih.speechTimer = 4.5;
+
+            muzo.speech = "AHAHA! İnekler bile kaçıyor! Kaç Muzo!";
+            muzo.speechTimer = 3.5;
+
+            screenShake = 12;
+            sfx.playAlert();
+            sfx.playMoo();
+            chaseOverlay.classList.remove('hidden');
+
+            // 10 inek panikleyip köyün içine doğru kaçışmaya başlar
+            cows.forEach((c, idx) => {
+                c.panicking = true;
+                const spreadAngle = Math.PI * 0.55 + (idx / cows.length) * (Math.PI * 0.45) + (Math.random() - 0.5) * 0.3;
+                const speed = 155 + Math.random() * 55;
+                c.panicVx = Math.cos(spreadAngle) * speed;
+                c.panicVy = Math.sin(spreadAngle) * speed;
+                c.mooBubble = idx % 2 === 0 ? "MÖÖÖÖ!! 😱" : "MÖÖ! 🔥";
+                c.mooTimer = 3.0 + Math.random() * 1.5;
             });
-            
-            message += `\n━━━━━━━━━━━━━━━\n`;
-            message += `Bu işlemler karşılığında ne istersin?`;
 
-            try {
-                await navigator.clipboard.writeText(message);
-                showSuccessModal();
-            } catch (err) {
-                const textArea = document.createElement("textarea");
-                textArea.value = message;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand("Copy");
-                textArea.remove();
-                showSuccessModal();
+            for (let i = 0; i < 45; i++) {
+                spawnParticle(
+                    barn.x + Math.random() * barn.width,
+                    barn.y + Math.random() * barn.height,
+                    i % 2 === 0 ? 'fire' : 'smoke'
+                );
             }
         }
 
-        function showSuccessModal() {
-            const modal = document.getElementById('success-modal');
-            const content = document.getElementById('modal-content');
-            const progressBar = document.getElementById('progress-bar');
-            
-            modal.classList.remove('hidden');
-            void modal.offsetWidth;
-            
-            content.classList.remove('scale-90', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
-            
-            setTimeout(() => {
-                progressBar.style.transition = 'width 2s linear';
-                progressBar.style.width = '100%';
-            }, 100);
+        function updateMelih(dt) {
+            const distToMuzo = Math.hypot(muzo.x - melih.x, muzo.y - melih.y);
 
-            setTimeout(() => {
-                window.location.href = "https://www.instagram.com/karikatur0171?igsh=MTJ1azNxenVocXd5";
-            }, 2000);
-        }
+            if (gameState === 'STEALTH') {
+                const wp = melih.waypoints[melih.waypointIndex];
+                const dx = wp.x - melih.x;
+                const dy = wp.y - melih.y;
+                const dist = Math.hypot(dx, dy);
 
-        function closeModal() {
-            const modal = document.getElementById('success-modal');
-            const content = document.getElementById('modal-content');
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-90', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
+                if (dist < 10) {
+                    melih.waitTimer -= dt;
+                    melih.walkAnim = 0;
+                    melih.angle += Math.sin(performance.now() * 0.002) * 0.8 * dt;
+                    if (melih.waitTimer <= 0) {
+                        melih.waypointIndex = (melih.waypointIndex + 1) % melih.waypoints.length;
+                        melih.waitTimer = melih.waypoints[melih.waypointIndex].wait;
+                    }
+                } else {
+                    const targetAngle = Math.atan2(dy, dx);
+                    melih.angle = targetAngle;
+                    melih.x += Math.cos(targetAngle) * melih.patrolSpeed * dt;
+                    melih.y += Math.sin(targetAngle) * melih.patrolSpeed * dt;
+                    melih.walkAnim += dt * 8;
+                }
 
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.animationDelay = `${Math.random() * 20}s`;
-                particle.style.animationDuration = `${15 + Math.random() * 20}s`;
-                container.appendChild(particle);
+                resolveCircleObstacles(melih);
+
+                if (!muzo.inBush && distToMuzo < melih.visionRange) {
+                    const angleToMuzo = Math.atan2(muzo.y - melih.y, muzo.x - melih.x);
+                    const angleDiff = Math.abs(normalizeAngle(angleToMuzo - melih.angle));
+
+                    if (angleDiff < melih.visionAngle / 2 && hasLineOfSight(melih.x, melih.y, muzo.x, muzo.y)) {
+                        melih.speech = "Hey! İneklerin yanında ne işin var Muzo?!";
+                        melih.speechTimer = 3;
+                        endGame('CAUGHT');
+                    }
+                }
+            } else if (gameState === 'CHASE') {
+                const angleToMuzo = Math.atan2(muzo.y - melih.y, muzo.x - melih.x);
+                let steerX = Math.cos(angleToMuzo);
+                let steerY = Math.sin(angleToMuzo);
+
+                for (const obs of obstacles) {
+                    const cx = obs.x + obs.w / 2;
+                    const cy = obs.y + obs.h / 2;
+                    const d = Math.hypot(melih.x - cx, melih.y - cy);
+                    const avoidDist = Math.max(obs.w, obs.h) * 0.72;
+                    if (d < avoidDist) {
+                        steerX += ((melih.x - cx) / d) * 1.4;
+                        steerY += ((melih.y - cy) / d) * 1.4;
+                    }
+                }
+
+                const finalAngle = Math.atan2(steerY, steerX);
+                melih.angle = finalAngle;
+                melih.x += Math.cos(finalAngle) * melih.chaseSpeed * dt;
+                melih.y += Math.sin(finalAngle) * melih.chaseSpeed * dt;
+                melih.walkAnim += dt * 15;
+
+                resolveCircleObstacles(melih);
+
+                if (distToMuzo < muzo.radius + melih.radius - 3) {
+                    endGame('CAUGHT');
+                }
             }
         }
+
+        function endGame(result) {
+            gameState = result;
+            promptBanner.classList.add('hidden');
+            chaseOverlay.classList.add('hidden');
+            controlsGuide.classList.add('hidden');
+            gameModal.classList.remove('hidden');
+
+            if (result === 'WON') {
+                sfx.playVictory();
+                modalEmoji.textContent = '🏆😈🐄🔥';
+                modalTitle.textContent = 'Başarıyla Kaçtın!';
+                modalTitle.className = 'font-game text-2xl sm:text-3xl font-bold text-emerald-400 mb-2';
+                modalDesc.innerHTML = `Helal olsun <strong class="text-amber-300">Muzo</strong>! Ahırı yaktın, 10 ineği köy meydanına saldın ve <strong class="text-rose-400">Melih</strong>'in elinden tereyağından kıl çeker gibi sıyrıldın!`;
+                startBtn.textContent = 'Tekrar Yaramazlık Yap!';
+            } else {
+                sfx.playCaught();
+                screenShake = 14;
+                modalEmoji.textContent = '😱👂💢';
+                modalTitle.textContent = 'Melih Seni Yakaladı!';
+                modalTitle.className = 'font-game text-2xl sm:text-3xl font-bold text-rose-500 mb-2';
+                modalDesc.innerHTML = barn.isBurning
+                    ? `<strong class="text-rose-400">Melih</strong> ensenden yakaladı: <em>"Hem ahırı yaktın hem 10 ineğimi ürküttün Muzo!"</em>`
+                    : `Daha ahırı yakamadan <strong class="text-rose-400">Melih</strong>'e yakalandın! Evlerin arkasındaki çalılara saklanarak ilerlemeyi dene.`;
+                startBtn.textContent = 'Yeniden Dene';
+            }
+        }
+
+        function updateHUD() {
+            staminaBar.style.width = `${(muzo.stamina / muzo.maxStamina) * 100}%`;
+            if (muzo.exhausted) {
+                staminaBar.className = 'h-full bg-rose-500 transition-all duration-75';
+            } else {
+                staminaBar.className = 'h-full bg-gradient-to-r from-sky-400 to-emerald-400 transition-all duration-75';
+            }
+
+            if (gameState === 'STEALTH') {
+                missionIcon.textContent = '🤫';
+                missionText.textContent = "Melih'e görünmeden ahıra sız ve yak!";
+
+                if (muzo.inBush) {
+                    stealthBadge.className = 'bg-emerald-900/95 border border-emerald-400 text-emerald-200 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-md flex items-center gap-1.5';
+                    stealthDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+                    stealthText.textContent = 'Çalıda Gizli';
+                } else {
+                    stealthBadge.className = 'bg-slate-900/90 border border-amber-400/50 text-amber-300 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-md flex items-center gap-1.5';
+                    stealthDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
+                    stealthText.textContent = 'Dikkatli Ol';
+                }
+            } else if (gameState === 'CHASE') {
+                missionIcon.textContent = '🔥';
+                missionText.textContent = "AHIRI YAKTIN! Hemen güvenli bölgeye KAÇ!";
+
+                stealthBadge.className = 'bg-rose-950/95 border border-rose-500 text-rose-200 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-md flex items-center gap-1.5 animate-pulse';
+                stealthDot.className = 'w-2.5 h-2.5 rounded-full bg-rose-500';
+                stealthText.textContent = 'MELİH KOVALIYOR!';
+            }
+        }
+
+        function spawnParticle(x, y, type) {
+            if (type === 'fire') {
+                particles.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 35,
+                    vy: -35 - Math.random() * 55,
+                    size: 10 + Math.random() * 14,
+                    life: 0.6 + Math.random() * 0.4,
+                    maxLife: 1.0,
+                    type: 'fire'
+                });
+            } else if (type === 'smoke') {
+                particles.push({
+                    x, y,
+                    vx: 15 + Math.random() * 25,
+                    vy: -45 - Math.random() * 45,
+                    size: 14 + Math.random() * 18,
+                    life: 1.4 + Math.random() * 0.8,
+                    maxLife: 2.2,
+                    type: 'smoke'
+                });
+            } else if (type === 'spark') {
+                particles.push({
+                    x, y,
+                    vx: (Math.random() - 0.5) * 90,
+                    vy: -40 - Math.random() * 70,
+                    size: 3 + Math.random() * 3,
+                    life: 0.35 + Math.random() * 0.25,
+                    maxLife: 0.6,
+                    type: 'spark'
+                });
+            }
+        }
+
+        function updateParticles(dt) {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx * dt;
+                p.y += p.vy * dt;
+                p.life -= dt;
+                if (p.type === 'smoke') p.size += 14 * dt;
+                if (p.type === 'fire') p.size *= 0.98;
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            const shakeX = screenShake > 0 ? (Math.random() - 0.5) * screenShake : 0;
+            const shakeY = screenShake > 0 ? (Math.random() - 0.5) * screenShake : 0;
+            ctx.translate(-camera.x + shakeX, -camera.y + shakeY);
+
+            // 1. ÇİMEN ZEMİN
+            ctx.fillStyle = '#4d7c3f';
+            ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+
+            for (const d of groundDetails) {
+                if (d.type === 'grass') {
+                    ctx.fillStyle = '#3f6832';
+                    ctx.fillRect(d.x, d.y, d.size, d.size * 1.6);
+                } else {
+                    ctx.fillStyle = d.color;
+                    ctx.beginPath();
+                    ctx.arc(d.x, d.y, d.size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // 2. BÜYÜYEN KÖY PATİKALARI VE MEYDANI
+            ctx.fillStyle = '#b5986d';
+            ctx.beginPath();
+            ctx.arc(1050, 870, 145, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ahır Önü Toprak İnek Avlusu
+            ctx.fillStyle = '#a38254';
+            ctx.beginPath();
+            ctx.roundRect(2050, 380, 320, 145, 24);
+            ctx.fill();
+
+            ctx.strokeStyle = '#c2a378';
+            ctx.lineWidth = 84;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            // Ana rota
+            ctx.moveTo(195, 1555);
+            ctx.lineTo(620, 1340);
+            ctx.lineTo(1050, 870);
+            ctx.lineTo(1620, 780);
+            ctx.lineTo(1720, 420);
+            ctx.lineTo(2210, 420);
+            // Kuzeybatı mahallesi yolu
+            ctx.moveTo(620, 1340);
+            ctx.lineTo(360, 960);
+            ctx.lineTo(320, 420);
+            ctx.lineTo(720, 380);
+            ctx.lineTo(1140, 380);
+            // Güney mahallesi yolu
+            ctx.moveTo(1050, 870);
+            ctx.lineTo(860, 1380);
+            ctx.lineTo(1400, 1450);
+            ctx.lineTo(1940, 1430);
+            ctx.lineTo(2330, 1390);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#a8895e';
+            ctx.lineWidth = 90;
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.stroke();
+            ctx.globalCompositeOperation = 'source-over';
+
+            // 3. GÜVENLİ BÖLGE
+            ctx.fillStyle = gameState === 'CHASE' ? 'rgba(16, 185, 129, 0.35)' : 'rgba(56, 189, 248, 0.22)';
+            ctx.strokeStyle = gameState === 'CHASE' ? '#10b981' : '#38bdf8';
+            ctx.lineWidth = 4;
+            ctx.setLineDash([12, 8]);
+            ctx.beginPath();
+            ctx.roundRect(safeZone.x, safeZone.y, safeZone.width, safeZone.height, 20);
+            ctx.fill();
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(safeZone.label, safeZone.x + safeZone.width / 2, safeZone.y + 30);
+
+            // 4. MELİH'İN GÖRÜŞ KONİSİ
+            if (gameState === 'STEALTH') {
+                ctx.save();
+                ctx.translate(melih.x, melih.y);
+                const grad = ctx.createRadialGradient(0, 0, 15, 0, 0, melih.visionRange);
+                grad.addColorStop(0, 'rgba(250, 204, 21, 0.42)');
+                grad.addColorStop(1, 'rgba(250, 204, 21, 0.02)');
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.arc(0, 0, melih.visionRange, melih.angle - melih.visionAngle / 2, melih.angle + melih.visionAngle / 2);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(250, 204, 21, 0.35)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // 5. EVLER, AHIR VE DİĞER ENGELLER
+            for (const obs of obstacles) {
+                if (obs.type === 'house') {
+                    drawHouse({ x: obs.x, y: obs.y, width: obs.w, height: obs.h });
+                } else if (obs.type === 'villageHouse') {
+                    drawVillageHouse(obs);
+                } else if (obs.type === 'barn') {
+                    drawBarn({ x: obs.x, y: obs.y, width: obs.w, height: obs.h });
+                } else if (obs.type === 'hay') {
+                    drawHayBale(obs);
+                } else if (obs.type === 'fence') {
+                    drawFence(obs);
+                } else if (obs.type === 'well') {
+                    drawWell(obs);
+                }
+            }
+
+            // 6. AHIRDAKİ 10 İNEK
+            drawCows();
+
+            // 7. KARAKTERLER
+            drawMuzo();
+            drawMelih();
+
+            // 8. SAKLANMA ÇALILARI
+            for (const b of bushes) {
+                const isPlayerInside = Math.hypot(muzo.x - b.x, muzo.y - b.y) < b.r;
+                ctx.save();
+                ctx.globalAlpha = isPlayerInside ? 0.62 : 0.96;
+
+                ctx.fillStyle = 'rgba(0,0,0,0.22)';
+                ctx.beginPath();
+                ctx.arc(b.x + 4, b.y + 6, b.r, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#225429';
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#2f7338';
+                ctx.beginPath();
+                ctx.arc(b.x - b.r * 0.28, b.y - b.r * 0.2, b.r * 0.62, 0, Math.PI * 2);
+                ctx.arc(b.x + b.r * 0.3, b.y - b.r * 0.15, b.r * 0.58, 0, Math.PI * 2);
+                ctx.arc(b.x, b.y + b.r * 0.25, b.r * 0.65, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(b.x - 10, b.y - 8, 3, 0, Math.PI * 2);
+                ctx.arc(b.x + 12, b.y + 6, 3, 0, Math.PI * 2);
+                ctx.arc(b.x - 4, b.y + 14, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // 9. KÖY AĞAÇLARI
+            for (const t of trees) {
+                ctx.save();
+                ctx.fillStyle = 'rgba(0,0,0,0.24)';
+                ctx.beginPath();
+                ctx.arc(t.x + 6, t.y + 8, t.r, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#14532d';
+                ctx.beginPath();
+                ctx.arc(t.x, t.y, t.r, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#166534';
+                ctx.beginPath();
+                ctx.arc(t.x - t.r * 0.2, t.y - t.r * 0.2, t.r * 0.72, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#22c55e';
+                ctx.globalAlpha = 0.35;
+                ctx.beginPath();
+                ctx.arc(t.x - t.r * 0.25, t.y - t.r * 0.25, t.r * 0.45, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // 10. ATEŞ & DUMAN PARÇACIKLARI
+            for (const p of particles) {
+                const alpha = Math.max(0, p.life / p.maxLife);
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                if (p.type === 'fire') {
+                    ctx.fillStyle = alpha > 0.5 ? '#f97316' : '#ef4444';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === 'smoke') {
+                    ctx.fillStyle = '#334155';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (p.type === 'spark') {
+                    ctx.fillStyle = '#fde047';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            // 11. AHIR YAKMA ÇUBUĞU
+            if (barn.burnProgress > 0 && !barn.isBurning) {
+                const barW = 140;
+                const barH = 16;
+                const bx = barn.x + barn.width / 2 - barW / 2;
+                const by = barn.y - 28;
+
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+                ctx.beginPath();
+                ctx.roundRect(bx - 3, by - 3, barW + 6, barH + 6, 8);
+                ctx.fill();
+
+                ctx.fillStyle = '#f97316';
+                ctx.beginPath();
+                ctx.roundRect(bx, by, (barn.burnProgress / 100) * barW, barH, 6);
+                ctx.fill();
+
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 11px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`🔥 Yakılıyor %${Math.floor(barn.burnProgress)}`, bx + barW / 2, by + 12);
+            }
+
+            // 12. KONUŞMA BALONCUKLARI
+            if (muzo.speechTimer > 0 && muzo.speech) {
+                drawSpeechBubble(muzo.x, muzo.y - 38, muzo.speech, '#fef08a', '#1e293b');
+            }
+            if (melih.speechTimer > 0 && melih.speech) {
+                drawSpeechBubble(melih.x, melih.y - 42, melih.speech, '#fee2e2', '#7f1d1d');
+            }
+
+            // 13. HEDEF YÖN OKU
+            drawTargetArrow();
+
+            ctx.restore();
+        }
+
+        function drawCows() {
+            for (const c of cows) {
+                           for (const c of cows) {
+                ctx.save();
+                ctx.translate(c.x, c.y);
+
+                // Gölge
+                ctx.fillStyle = 'rgba(0,0,0,0.22)';
+                ctx.beginPath();
+                ctx.ellipse(2, 4, 17, 11, c.angle, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.rotate(c.angle);
+
+                // Bacak hareketi
+                const legShift = Math.sin(c.walkAnim) * 3.5;
+                ctx.fillStyle = '#1e293b';
+                ctx.beginPath();
+                ctx.arc(7 + legShift, -9, 3, 0, Math.PI * 2);
+                ctx.arc(7 - legShift, 9, 3, 0, Math.PI * 2);
+                ctx.arc(-8 - legShift, -9, 3, 0, Math.PI * 2);
+                ctx.arc(-8 + legShift, 9, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Kuyruk
+                const tailWag = Math.sin(performance.now() * 0.008 + c.spotSeed) * 4;
+                ctx.strokeStyle = '#334155';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(-15, 0);
+                ctx.lineTo(-22, tailWag);
+                ctx.stroke();
+
+                // Beyaz İnek Gövdesi
+                ctx.fillStyle = '#f8fafc';
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 1.8;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 16, 10.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Siyah Benekler
+                ctx.fillStyle = '#1e293b';
+                ctx.beginPath();
+                ctx.arc(-4, -4, 4.5, 0, Math.PI * 2);
+                ctx.arc(3, 4, 4, 0, Math.PI * 2);
+                ctx.arc(-8, 3, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Kafa
+                ctx.fillStyle = '#f8fafc';
+                ctx.beginPath();
+                ctx.ellipse(15, 0, 6.5, 5.5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Pembe Burun
+                ctx.fillStyle = '#fda4af';
+                ctx.beginPath();
+                ctx.ellipse(19.5, 0, 3, 4.2, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Boynuzlar
+                ctx.fillStyle = '#fde68a';
+                ctx.beginPath();
+                ctx.arc(13, -6, 2, 0, Math.PI * 2);
+                ctx.arc(13, 6, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+
+                // İnek möö balonu
+                if (c.mooTimer > 0 && c.mooBubble) {
+                    drawSpeechBubble(c.x, c.y - 22, c.mooBubble, '#ffffff', '#0f172a');
+                }
+            }
+        }
+
+        function drawHouse(h) {
+            ctx.fillStyle = 'rgba(0,0,0,0.28)';
+            ctx.beginPath();
+            ctx.roundRect(h.x + 10, h.y + 12, h.width, h.height, 12);
+            ctx.fill();
+
+            ctx.fillStyle = '#f1f5f9';
+            ctx.beginPath();
+            ctx.roundRect(h.x, h.y, h.width, h.height, 10);
+            ctx.fill();
+
+            ctx.fillStyle = '#b91c1c';
+            ctx.beginPath();
+            ctx.roundRect(h.x + 8, h.y + 8, h.width - 16, h.height - 16, 8);
+            ctx.fill();
+
+            ctx.strokeStyle = '#7f1d1d';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(h.x + 24, h.y + h.height / 2);
+            ctx.lineTo(h.x + h.width - 24, h.y + h.height / 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(h.x + 40, h.y + 28, 26, 26);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 15px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText("MELİH'İN EVİ", h.x + h.width / 2, h.y + h.height / 2 + 28);
+        }
+
+        function drawVillageHouse(vh) {
+            ctx.fillStyle = 'rgba(0,0,0,0.25)';
+            ctx.beginPath();
+            ctx.roundRect(vh.x + 8, vh.y + 10, vh.w, vh.h, 12);
+            ctx.fill();
+
+            ctx.fillStyle = vh.wall;
+            ctx.beginPath();
+            ctx.roundRect(vh.x, vh.y, vh.w, vh.h, 10);
+            ctx.fill();
+
+            ctx.fillStyle = vh.roof;
+            ctx.beginPath();
+            ctx.roundRect(vh.x + 8, vh.y + 8, vh.w - 16, vh.h - 16, 8);
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(15, 23, 42, 0.35)';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(vh.x + 20, vh.y + vh.h / 2);
+            ctx.lineTo(vh.x + vh.w - 20, vh.y + vh.h / 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#475569';
+            ctx.fillRect(vh.x + vh.w - 52, vh.y + 22, 22, 22);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 13px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(vh.label, vh.x + vh.w / 2, vh.y + vh.h / 2 + 24);
+        }
+
+        function drawBarn(b) {
+            if (!barn.isBurning) {
+                ctx.strokeStyle = 'rgba(249, 115, 22, 0.35)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 6]);
+                ctx.beginPath();
+                ctx.roundRect(b.x - 35, b.y - 35, b.width + 70, b.height + 70, 28);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.beginPath();
+            ctx.roundRect(b.x + 10, b.y + 12, b.width, b.height, 10);
+            ctx.fill();
+
+            ctx.fillStyle = barn.isBurning ? '#29150c' : '#9a3412';
+            ctx.beginPath();
+            ctx.roundRect(b.x, b.y, b.width, b.height, 10);
+            ctx.fill();
+
+            ctx.strokeStyle = barn.isBurning ? '#451a03' : '#7c2d12';
+            ctx.lineWidth = 3;
+            for (let y = b.y + 22; y < b.y + b.height - 10; y += 22) {
+                ctx.beginPath();
+                ctx.moveTo(b.x + 10, y);
+                ctx.lineTo(b.x + b.width - 10, y);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#fef3c7';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(b.x + 15, b.y + b.height / 2);
+            ctx.lineTo(b.x + b.width - 15, b.y + b.height / 2);
+            ctx.stroke();
+
+            ctx.fillStyle = barn.isBurning ? '#fdba74' : '#fef3c7';
+            ctx.font = 'bold 16px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(barn.isBurning ? "🔥 YANAN AHIR 🔥" : "AHIR (10 İNEK)", b.x + b.width / 2, b.y + b.height / 2 - 12);
+        }
+
+        function drawHayBale(h) {
+            ctx.fillStyle = 'rgba(0,0,0,0.22)';
+            ctx.beginPath();
+            ctx.roundRect(h.x + 4, h.y + 5, h.w, h.h, 8);
+            ctx.fill();
+
+            ctx.fillStyle = '#eab308';
+            ctx.beginPath();
+            ctx.roundRect(h.x, h.y, h.w, h.h, 8);
+            ctx.fill();
+
+            ctx.strokeStyle = '#a16207';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(h.x + 6, h.y + 4, h.w - 12, h.h - 8);
+        }
+
+        function drawFence(f) {
+            ctx.fillStyle = '#78350f';
+            ctx.beginPath();
+            ctx.roundRect(f.x, f.y, f.w, f.h, 4);
+            ctx.fill();
+            ctx.strokeStyle = '#451a03';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function drawWell(w) {
+            const cx = w.x + w.w / 2;
+            const cy = w.y + w.h / 2;
+            ctx.fillStyle = '#64748b';
+            ctx.beginPath();
+            ctx.arc(cx, cy, w.w / 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#0284c7';
+            ctx.beginPath();
+            ctx.arc(cx, cy, w.w / 2 - 7, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawMuzo() {
+            ctx.save();
+            ctx.translate(muzo.x, muzo.y);
+
+            if (muzo.inBush) {
+                ctx.strokeStyle = '#4ade80';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.arc(0, 0, muzo.radius + 6, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            ctx.rotate(muzo.angle);
+
+            const footOffset = Math.sin(muzo.walkAnim) * 6;
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.arc(footOffset, -9, 5, 0, Math.PI * 2);
+            ctx.arc(-footOffset, 9, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(0, 0, muzo.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#b45309';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.arc(3, 0, 11, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(2, 0, 10.5, Math.PI * 0.5, Math.PI * 1.5);
+            ctx.fill();
+            ctx.fillRect(-13, -5, 7, 10);
+
+            ctx.restore();
+
+            ctx.fillStyle = '#fef08a';
+            ctx.font = 'bold 12px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Muzo', muzo.x, muzo.y + 30);
+        }
+
+        function drawMelih() {
+            ctx.save();
+            ctx.translate(melih.x, melih.y);
+            ctx.rotate(melih.angle);
+
+            const footOffset = Math.sin(melih.walkAnim) * 7;
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(footOffset, -11, 6, 0, Math.PI * 2);
+            ctx.arc(-footOffset, 11, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = gameState === 'CHASE' ? '#dc2626' : '#2563eb';
+            ctx.beginPath();
+            ctx.arc(0, 0, melih.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            ctx.fillStyle = '#fdba74';
+            ctx.beginPath();
+            ctx.arc(4, 0, 12, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(11, -7, 4, 14);
+
+            if (gameState === 'CHASE') {
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath();
+                ctx.arc(-4, -8, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+
+            ctx.fillStyle = gameState === 'CHASE' ? '#fca5a5' : '#bae6fd';
+            ctx.font = 'bold 13px Fredoka, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(gameState === 'CHASE' ? '😡 Melih' : 'Melih', melih.x, melih.y + 34);
+        }
+
+        function drawSpeechBubble(x, y, text, bgColor, textColor) {
+            ctx.save();
+            ctx.font = 'bold 12px Inter, sans-serif';
+            const padding = 10;
+            const textWidth = ctx.measureText(text).width;
+            const boxW = textWidth + padding * 2;
+            const boxH = 26;
+
+            ctx.fillStyle = bgColor;
+            ctx.strokeStyle = textColor;
+            ctx.lineWidth = 1.5;
+
+            ctx.beginPath();
+            ctx.roundRect(x - boxW / 2, y - boxH, boxW, boxH, 10);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x - 5, y);
+            ctx.lineTo(x + 5, y);
+            ctx.lineTo(x, y + 6);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.fillText(text, x, y - 9);
+            ctx.restore();
+        }
+
+        function drawTargetArrow() {
+            const targetX = gameState === 'CHASE' ? safeZone.x + safeZone.width / 2 : barn.x + barn.width / 2;
+            const targetY = gameState === 'CHASE' ? safeZone.y + safeZone.height / 2 : barn.y + barn.height / 2;
+
+            const dx = targetX - muzo.x;
+            const dy = targetY - muzo.y;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist < 140) return;
+
+            const angle = Math.atan2(dy, dx);
+            const arrowDist = 52;
+            const ax = muzo.x + Math.cos(angle) * arrowDist;
+            const ay = muzo.y + Math.sin(angle) * arrowDist;
+
+            ctx.save();
+            ctx.translate(ax, ay);
+            ctx.rotate(angle);
+            ctx.fillStyle = gameState === 'CHASE' ? '#10b981' : '#f97316';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(12, 0);
+            ctx.lineTo(-6, -7);
+            ctx.lineTo(-2, 0);
+            ctx.lineTo(-6, 7);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function gameLoop(timestamp) {
+            const dt = Math.min(0.05, (timestamp - lastTime) / 1000 || 0);
+            lastTime = timestamp;
+
+            update(dt);
+            render();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.onload = function () {
+            buildVillage();
+            requestAnimationFrame(gameLoop);
+        };
     </script>
 </body>
 </html>
