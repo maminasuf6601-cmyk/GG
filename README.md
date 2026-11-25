@@ -2,327 +2,440 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MAMİ01 GG İŞLEMLERİ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Muzo'nun Yaramazlık Planı</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: #0f0c29;
-            overflow-x: hidden;
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
         }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .bg-animate {
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -2;
-        }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .particles {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
+            background-color: #1a2e1a;
+            font-family: 'Inter', sans-serif;
         }
-        .particle {
-            position: absolute;
-            width: 4px; height: 4px;
-            background: rgba(139, 92, 246, 0.5);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
-            box-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+        .font-game {
+            font-family: 'Fredoka', sans-serif;
         }
-        @keyframes float {
-            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) translateX(100px); opacity: 0; }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes pulse-danger {
+            0%, 100% { box-shadow: inset 0 0 30px rgba(239, 68, 68, 0.0); }
+            50% { box-shadow: inset 0 0 60px rgba(239, 68, 68, 0.55); }
         }
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-2px);
-            border-color: rgba(139, 92, 246, 0.5);
-            box-shadow: 0 12px 40px 0 rgba(139, 92, 246, 0.4);
-        }
-        .glass-card.selected {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3));
-            border-color: rgba(139, 92, 246, 0.8);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
-        }
-        .custom-checkbox {
-            appearance: none;
-            width: 24px; height: 24px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 6px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .chase-vignette {
+            animation: pulse-danger 1s infinite;
             pointer-events: none;
         }
-        .glass-card.selected .custom-checkbox {
-            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-            border-color: transparent;
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        .glass-card.selected .custom-checkbox::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 14px;
+        .modal-pop {
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
-        .neon-text {
-            text-shadow: 0 0 10px rgba(139, 92, 246, 0.5),
-                         0 0 20px rgba(139, 92, 246, 0.3),
-                         0 0 30px rgba(59, 130, 246, 0.3);
+        .joystick-base {
+            background: rgba(255, 255, 255, 0.18);
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(4px);
         }
-        .btn-pulse {
-            animation: pulse-glow 2s infinite;
+        .joystick-stick {
+            background: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(139, 92, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        .action-btn {
+            transition: transform 0.08s ease, background-color 0.15s ease;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.35);
         }
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f0c29; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, #8b5cf6, #3b82f6); 
-            border-radius: 4px;
+        .action-btn:active, .action-btn.active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.35);
         }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col items-center pb-20">
+<body class="relative w-screen h-screen overflow-hidden">
 
-    <div class="bg-animate"></div>
-    <div class="particles" id="particles"></div>
+    <!-- Oyun Alanı (Canvas) -->
+    <canvas id="gameCanvas"></canvas>
 
-    <header class="w-full max-w-4xl px-4 pt-10 pb-6 text-center relative z-10">
-        <div class="inline-block mb-2 px-4 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-bold tracking-widest uppercase">
-            Premium Services
-        </div>
-        <h1 class="text-5xl md:text-7xl font-black font-orbitron mb-4 tracking-tighter glitch neon-text" data-text="MAMİ01">
-            MAMİ01
-        </h1>
-        <h2 class="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 tracking-widest uppercase">
-            GG İŞLEMLERİ
-        </h2>
-        <p class="mt-4 text-gray-400 text-sm md:text-base max-w-lg mx-auto">
-            İhtiyacınız olan işlemleri seçin, otomatik olarak DM için hazırlansın.
-        </p>
-    </header>
+    <!-- Kovalamaca Kırmızı Ekran Efekti -->
+    <div id="chaseOverlay" class="fixed inset-0 hidden chase-vignette z-10"></div>
 
-    <main class="w-full max-w-3xl px-4 relative z-10 space-y-4">
-        
-        <div id="service-list" class="space-y-3">
-        </div>
-
-        <div class="mt-8 sticky bottom-6 z-50">
-            <div class="glass-card rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 border-t border-purple-500/50 shadow-[0_0_50px_rgba(139,92,246,0.3)]">
-                <div class="text-center md:text-left">
-                    <p class="text-gray-400 text-sm uppercase tracking-wider">Seçilen İşlem</p>
-                    <p id="selected-count" class="text-2xl font-bold text-white font-orbitron">0 ADET</p>
+    <!-- Üst Bilgi Paneli (HUD) -->
+    <div id="hud" class="fixed top-0 left-0 right-0 p-3 sm:p-4 flex flex-wrap items-start justify-between gap-2 z-20 pointer-events-none">
+        <div class="flex flex-col gap-2 max-w-[68%] sm:max-w-md">
+            <div class="bg-slate-900/85 backdrop-blur-md border border-slate-700/80 text-white px-3.5 py-2 rounded-2xl shadow-lg flex items-center gap-2.5">
+                <span id="missionIcon" class="text-xl sm:text-2xl">🤫</span>
+                <div>
+                    <div class="text-[10px] sm:text-xs uppercase tracking-wider text-amber-400 font-bold">Mevcut Görev</div>
+                    <div id="missionText" class="font-game text-sm sm:text-base font-semibold leading-tight">Melih'e görünmeden ahıra sız!</div>
                 </div>
-                
-                <button onclick="submitOrder()" class="group relative w-full md:w-auto px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl font-bold text-lg uppercase tracking-wider overflow-hidden transition-all hover:scale-105 btn-pulse">
-                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-                    <span class="relative flex items-center justify-center gap-2">
-                        <i class="fab fa-instagram"></i>
-                        DM Gönder
-                    </span>
-                </button>
+            </div>
+
+            <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700/70 px-3 py-1.5 rounded-xl shadow-md flex items-center gap-2 w-48 sm:w-56">
+                <span class="text-xs font-bold text-sky-300">⚡ Enerji</span>
+                <div class="flex-1 h-2.5 bg-slate-700 rounded-full overflow-hidden">
+                    <div id="staminaBar" class="h-full bg-gradient-to-r from-sky-400 to-emerald-400 w-full transition-all duration-75"></div>
+                </div>
             </div>
         </div>
 
-    </main>
-
-    <div id="success-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeModal()"></div>
-        <div class="glass-card rounded-3xl p-8 max-w-sm w-full text-center relative transform scale-90 opacity-0 transition-all duration-300" id="modal-content">
-            <h3 class="text-2xl font-bold text-white mb-2 font-orbitron">Hazır!</h3>
-            <p class="text-gray-300 mb-6">Seçtiğiniz işlemler panoya kopyalandı. Instagram DM'e yönlendiriliyorsunuz...</p>
-            <div class="w-full bg-gray-700 rounded-full h-1.5 mb-2 overflow-hidden">
-                <div class="bg-gradient-to-r from-purple-500 to-blue-500 h-1.5 rounded-full" style="width: 0%" id="progress-bar"></div>
+        <div class="flex items-center gap-2 pointer-events-auto">
+            <div id="stealthBadge" class="bg-emerald-950/90 border border-emerald-500/50 text-emerald-300 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold shadow-md flex items-center gap-1.5">
+                <span id="stealthDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="stealthText">Gizli</span>
             </div>
+
+            <button id="muteBtn" class="bg-slate-900/85 hover:bg-slate-800 border border-slate-700 text-white p-2.5 rounded-xl shadow-md active:scale-95 transition" title="Sesi Aç/Kapat">
+                <span id="muteIcon" class="text-lg leading-none">🔊</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Ortada Çıkan Uyarı / Etkileşim İpucu -->
+    <div id="promptBanner" class="fixed top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none hidden">
+        <div id="promptText" class="bg-amber-500 text-slate-950 font-game font-bold px-4 py-2 rounded-full shadow-xl border-2 border-amber-200 text-sm sm:text-base whitespace-nowrap animate-bounce">
+            🔥 Ahırı yakmak için [E] veya [BOŞLUK] tuşuna basılı tut!
+        </div>
+    </div>
+
+    <!-- Mobil & Dokunmatik Kontroller -->
+    <div id="touchControls" class="fixed inset-x-0 bottom-0 p-4 sm:p-6 flex items-end justify-between z-20 pointer-events-none">
+        <div id="joystickZone" class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full joystick-base pointer-events-auto flex items-center justify-center">
+            <div id="joystickStick" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full joystick-stick pointer-events-none"></div>
+        </div>
+
+        <div class="flex items-end gap-3 pointer-events-auto">
+            <button id="btnSprint" class="action-btn w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-sky-500 hover:bg-sky-400 border-2 border-sky-200 text-white font-game font-bold flex flex-col items-center justify-center shadow-lg">
+                <span class="text-xl sm:text-2xl">👟</span>
+                <span class="text-[11px] sm:text-xs">KOŞ</span>
+            </button>
+
+            <button id="btnIgnite" class="action-btn w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-orange-600 hover:bg-orange-500 border-2 border-orange-200 text-white font-game font-bold flex flex-col items-center justify-center shadow-lg opacity-50">
+                <span class="text-2xl sm:text-3xl">🔥</span>
+                <span class="text-xs sm:text-sm">YAK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Başlangıç & Oyun Sonu Modal Ekranı -->
+    <div id="gameModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-30 flex items-center justify-center p-4">
+        <div class="modal-pop bg-slate-900 border-2 border-slate-700 rounded-3xl max-w-md w-full p-6 sm:p-7 text-center shadow-2xl text-white">
+            <div id="modalEmoji" class="text-5xl sm:text-6xl mb-3">😈🔥🐄</div>
+            <h1 id="modalTitle" class="font-game text-2xl sm:text-3xl font-bold text-amber-400 mb-2">Muzo'nun Yaramazlık Planı</h1>
+            <p id="modalDesc" class="text-slate-300 text-sm sm:text-base leading-relaxed mb-5">
+                Sen köyün en şımarık çocuğu <strong class="text-amber-300">Muzo</strong>'sun! Büyüyen köyde ilerideki <strong class="text-rose-400">Melih</strong>'in evinin yanındaki 10 inekli ahıra gizlice sız, kibriti çakıp ahırı yak ve inekler sağa sola kaçışırken Melih seni yakalamadan güvenli bölgeye kaç!
+            </p>
+
+            <div id="controlsGuide" class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5 mb-6 text-left text-xs sm:text-sm text-slate-300 space-y-1.5">
+                <div class="flex items-center gap-2"><span class="text-base">🕹️</span> <span><strong>Hareket:</strong> WASD / Yön Tuşları (veya Sol Joystick)</span></div>
+                <div class="flex items-center gap-2"><span class="text-base">🌿</span> <span><strong>Gizlenme:</strong> Çalılara girerek Melih'in gözünden kaybol</span></div>
+                <div class="flex items-center gap-2"><span class="text-base">🔥</span> <span><strong>Ahırı Yak:</strong> Ahırın yanında <strong>E / Boşluk</strong> (veya YAK butonu) basılı tut</span></div>
+                <div class="flex items-center gap-2"><span class="text-base">👟</span> <span><strong>Hızlı Koş:</strong> <strong>Shift</strong> tuşu (veya KOŞ butonu)</span></div>
+            </div>
+
+            <button id="startBtn" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-game font-bold text-lg sm:text-xl shadow-lg shadow-orange-600/30 active:scale-95 transition cursor-pointer">
+                Oyuna Başla!
+            </button>
         </div>
     </div>
 
     <script>
-        const services = [
-            { id: 1, title: "Coin & Para", icon: "fa-coins", color: "text-yellow-400", description: "hesabıza istediğiniz kadar coin yapılır. 500kMax", price: "50₺" },
-            { id: 2, title: "King Rank", icon: "fa-crown", color: "text-yellow-300", description: "hesabınız kısa süre içinde king rank yapılır", price: "100₺" },
-            { id: 3, title: "Tampon Sökme", icon: "fa-car-crash", color: "text-red-400", description: "istediğiniz bir arabanın ön-arka tamponu sökülür NOT!:her arabaya olmaz", price: "20₺" },
-            { id: 4, title: "KROM: Far, Kaliper, Cam, Çakar, Araba, Jant", icon: "fa-spray-can", color: "text-gray-300", description: "NOT!: her renk far krom yapılmaz", price: "20₺" },
-            { id: 5, title: "Gövde Kiti", icon: "fa-car-side", color: "text-blue-400", description: "her hangi bir arabadaki istediğiniz bir parça arabanıza takılır (anten dahil) NOT!: her parça her arabaya takılmaz ", price: "20₺" },
-            { id: 6, title: "HP: 99, 300, 324, 400, 414, 925, 1695", icon: "fa-tachometer-alt", color: "text-green-400", description: "arabanıza istediğiniz hp yapılır", price: "20₺" },
-            { id: 7, title: "SANZIMAN: 1E-20, 1E-30", icon: "fa-cogs", color: "text-orange-400", description: "arabanız 1E-20 şanzımanla dahada hızlanacak", price: "20₺" },
-            { id: 8, title: "Siren", icon: "fa-bullhorn", color: "text-red-500", description: "istediğiniz bütün arabalara siren takılır", price: "20₺" },
-            { id: 9, title: "Araba Kopyalama", icon: "fa-copy", color: "text-purple-400", description: "bir arabadan birden fazla arkadaşlarınıza verebilirsiniz", price: "20₺" },
-            { id: 10, title: "Çizim & Logo Kopyalama", icon: "fa-paint-brush", color: "text-pink-400", description: "mesela bir sanatçı çizimi bütün arabalara koyulabilir", price: "50₺" },
-            { id: 11, title: "Özel ID", icon: "fa-fingerprint", color: "text-cyan-400", description: "ID'nizin karışık rakam ve harflerden olmasından bıkmadınızmı neden isminizi yazdırmıyorsunuz", price: "50₺" },
-            { id: 12, title: "premium kıyafet alma", icon: "fa-dharmachakra", color: "text-indigo-400", description: "karakterinize kıyafet alcaksınız ama kıyafet kilitlimi onu sizin için alabiliriz", price: "20₺" }
-        ]; // ← BU SATIR EKSİKTİ: ]; kapanış
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-        let selectedServices = new Set();
+        const gameModal = document.getElementById('gameModal');
+        const modalEmoji = document.getElementById('modalEmoji');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const controlsGuide = document.getElementById('controlsGuide');
+        const startBtn = document.getElementById('startBtn');
+        const missionIcon = document.getElementById('missionIcon');
+        const missionText = document.getElementById('missionText');
+        const staminaBar = document.getElementById('staminaBar');
+        const stealthBadge = document.getElementById('stealthBadge');
+        const stealthDot = document.getElementById('stealthDot');
+        const stealthText = document.getElementById('stealthText');
+        const promptBanner = document.getElementById('promptBanner');
+        const promptText = document.getElementById('promptText');
+        const chaseOverlay = document.getElementById('chaseOverlay');
+        const muteBtn = document.getElementById('muteBtn');
+        const muteIcon = document.getElementById('muteIcon');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            renderServices();
-            createParticles();
-        });
+        const joystickZone = document.getElementById('joystickZone');
+        const joystickStick = document.getElementById('joystickStick');
+        const btnSprint = document.getElementById('btnSprint');
+        const btnIgnite = document.getElementById('btnIgnite');
 
-        function renderServices() {
-            const container = document.getElementById('service-list');
-            container.innerHTML = services.map(service => `
-                <div onclick="toggleService(${service.id})" 
-                     class="glass-card rounded-xl p-4 cursor-pointer flex items-center gap-4 group select-none ${selectedServices.has(service.id) ? 'selected' : ''}"
-                     id="service-${service.id}">
-                    
-                    <div class="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:border-purple-500/50 transition-colors flex-shrink-0">
-                        <i class="fas ${service.icon} ${service.color} text-xl"></i>
-                    </div>
-                    
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-lg text-white group-hover:text-purple-300 transition-colors">${service.title}</h3>
-                        <p class="text-sm text-gray-500 mt-1 group-hover:text-gray-400 transition-colors">${service.description}</p>
-                    </div>
-                    
-                    <div class="flex-shrink-0 flex flex-col items-end gap-1">
-                        <div class="px-3 py-1.5 rounded-lg bg-white/10 border border-white/20 text-sm font-bold text-white/80 min-w-[60px] text-center">
-                            ${service.price}
-                        </div>
-                        <div class="relative">
-                            <div class="custom-checkbox"></div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function toggleService(id) {
-            const element = document.getElementById(`service-${id}`);
-            if (selectedServices.has(id)) {
-                selectedServices.delete(id);
-                element.classList.remove('selected');
-            } else {
-                selectedServices.add(id);
-                element.classList.add('selected');
-            }
-            updateCounter();
-        }
-
-        function updateCounter() {
-            const count = selectedServices.size;
-            const counterEl = document.getElementById('selected-count');
-            counterEl.style.transform = 'scale(1.2)';
-            setTimeout(() => {
-                counterEl.innerText = `${count} ADET`;
-                counterEl.style.transform = 'scale(1)';
-            }, 100);
-        }
-
-        async function submitOrder() {
-            if (selectedServices.size === 0) {
-                const btn = document.querySelector('button');
-                btn.classList.add('animate-bounce');
-                setTimeout(() => btn.classList.remove('animate-bounce'), 1000);
-                return;
+        // ==========================================
+        // WEB AUDIO API İLE SENTEZLENMİŞ SES EFEKTLERİ
+        // ==========================================
+        class SoundEffects {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+                this.stepTimer = 0;
             }
 
-            const selectedItems = services.filter(s => selectedServices.has(s.id));
-            const date = new Date().toLocaleDateString('tr-TR');
-            
-            let message = `🎮 MAMİ01 GG İŞLEM TALEBİ 🎮\n`;
-            message += `📅 Tarih: ${date}\n`;
-            message += `━━━━━━━━━━━━━━━\n\n`;
-            
-            selectedItems.forEach((item, index) => {
-                message += `${index + 1}. ${item.title}\n`;
-            });
-            
-            message += `\n━━━━━━━━━━━━━━━\n`;
-            message += `Bu işlemler karşılığında ne istersin?`;
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
 
-            try {
-                await navigator.clipboard.writeText(message);
-                showSuccessModal();
-            } catch (err) {
-                const textArea = document.createElement("textarea");
-                textArea.value = message;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand("Copy");
-                textArea.remove();
-                showSuccessModal();
+            toggleMute() {
+                this.muted = !this.muted;
+                muteIcon.textContent = this.muted ? '🔇' : '🔊';
+            }
+
+            playStep(isRunning) {
+                if (this.muted || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                const baseFreq = isRunning ? 140 : 105;
+                osc.frequency.setValueAtTime(baseFreq + Math.random() * 25, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.06);
+
+                gain.gain.setValueAtTime(isRunning ? 0.08 : 0.04, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.06);
+            }
+
+            playMatchStrike() {
+                if (this.muted || !this.ctx) return;
+                const bufferSize = this.ctx.sampleRate * 0.08;
+                const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+                }
+                const noise = this.ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'highpass';
+                filter.frequency.value = 1200;
+
+                const gain = this.ctx.createGain();
+                gain.gain.value = 0.12;
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                noise.start();
+            }
+
+            playMoo() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                const pitch = 95 + Math.random() * 35;
+                osc.frequency.setValueAtTime(pitch, now);
+                osc.frequency.linearRampToValueAtTime(pitch * 1.18, now + 0.18);
+                osc.frequency.linearRampToValueAtTime(pitch * 0.85, now + 0.55);
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 420;
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.09, now + 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.58);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+
+            playAlert() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(320, now);
+                osc.frequency.linearRampToValueAtTime(640, now + 0.15);
+                osc.frequency.linearRampToValueAtTime(480, now + 0.35);
+
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            }
+
+            playCaught() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const notes = [300, 250, 190, 130];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+                    gain.gain.setValueAtTime(0.15, now + idx * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (idx + 1) * 0.12);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.12);
+                    osc.stop(now + (idx + 1) * 0.12);
+                });
+            }
+
+            playVictory() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.1);
+                    gain.gain.setValueAtTime(0.16, now + idx * 0.1);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.1 + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + idx * 0.1);
+                    osc.stop(now + idx * 0.1 + 0.3);
+                });
             }
         }
 
-        function showSuccessModal() {
-            const modal = document.getElementById('success-modal');
-            const content = document.getElementById('modal-content');
-            const progressBar = document.getElementById('progress-bar');
-            
-            modal.classList.remove('hidden');
-            void modal.offsetWidth;
-            
-            content.classList.remove('scale-90', 'opacity-0');
-            content.classList.add('scale-100', 'opacity-100');
-            
-            setTimeout(() => {
-                progressBar.style.transition = 'width 2s linear';
-                progressBar.style.width = '100%';
-            }, 100);
+        const sfx = new SoundEffects();
+        muteBtn.addEventListener('click', () => sfx.toggleMute());
 
-            setTimeout(() => {
-                window.location.href = "https://www.instagram.com/karikatur0171?igsh=MTJ1azNxenVocXd5";
-            }, 2000);
-        }
+        // ==========================================
+        // BÜYÜTÜLMÜŞ KÖY DÜNYASI (2600 x 1850)
+        // ==========================================
+        const WORLD = {
+            width: 2600,
+            height: 1850
+        };
 
-        function closeModal() {
-            const modal = document.getElementById('success-modal');
-            const content = document.getElementById('modal-content');
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-90', 'opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
+        let gameState = 'MENU';
+        let lastTime = 0;
+        let screenShake = 0;
 
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = `${Math.random() * 100}%`;
-                particle.style.animationDelay = `${Math.random() * 20}s`;
-                particle.style.animationDuration = `${15 + Math.random() * 20}s`;
-                container.appendChild(particle);
-            }
-        }
-    </script>
-</body>
-</html>
+        const camera = { x: 0, y: 0 };
+
+        const keys = {};
+        const touchInput = {
+            dx: 0,
+            dy: 0,
+            sprint: false,
+            ignite: false
+        };
+
+        // Oyuncu: Muzo
+        const muzo = {
+            x: 190,
+            y: 1560,
+            radius: 17,
+            baseSpeed: 195,
+            sprintSpeed: 320,
+            stamina: 100,
+            maxStamina: 100,
+            exhausted: false,
+            angle: -0.5,
+            walkAnim: 0,
+            inBush: false,
+            speech: '',
+            speechTimer: 0
+        };
+
+        // Düşman: Ev Sahibi Melih
+        const melih = {
+            x: 1620,
+            y: 780,
+            radius: 20,
+            patrolSpeed: 132,
+            chaseSpeed: 260,
+            angle: Math.PI,
+            visionRange: 270,
+            visionAngle: Math.PI / 3.2,
+            walkAnim: 0,
+            state: 'PATROL',
+            waypointIndex: 0,
+            waitTimer: 0,
+            speech: '',
+            speechTimer: 0,
+            waypoints: [
+                { x: 1620, y: 780, wait: 1.1 },
+                { x: 2150, y: 760, wait: 1.0 },
+                { x: 2240, y: 1140, wait: 1.2 },
+                { x: 1720, y: 1220, wait: 1.0 },
+                { x: 1240, y: 1020, wait: 1.2 },
+                { x: 1380, y: 620, wait: 1.0 }
+            ]
+        };
+
+        // Güvenli Bölge (Köy Girişi)
+        const safeZone = {
+            x: 60,
+            y: 1410,
+            width: 270,
+            height: 290,
+            label: "GÜVENLİ BÖLGE (KAÇIŞ)"
+        };
+
+        // Hedef Ahır (10 İnekli Büyük Ahır)
+        const barn = {
+            x: 2060,
+            y: 170,
+            width: 300,
+            height: 210,
+            igniteRadius: 85,
+            burnProgress: 0,
+            isBurning: false,
+            matchTick: 0
+        };
+
+        // Melih'in Evi
+        const house = {
+            x: 1580,
+            y: 170,
+            width: 290,
+            height: 210
+        };
+
+        // Köydeki Diğer Evler (10 Adet Köy Evi & Yapı)
+        const villageHouses = [
+            { x: 160, y: 200, w: 230, h: 170, roof: '#2563eb', wall: '#f8fafc', label: "DEMİRCİ EVİ" },
+            { x: 560, y: 170, w: 245, h: 175, roof: '#d97706', wall: '#fef3c7', label: "MUHTAR EVİ" },
+            { x: 1020, y: 180, w: 235, h: 170, roof: '#0d9488', wall: '#f0fdfa', label: "KAHVEHANE" },
+            { x: 210, y: 620, w: 225, h: 165, roof: '#059669', wall: '#f1f5f9', label: "FIRIN" },
+            { x: 640, y: 660, w: 230, h: 170, roof: '#ea580c', wall: '#fff7ed', label: "BAKKAL" },
+            { x: 240, y: 1030, w: 220, h: 160, roof: '#0284c7', wall: '#f0f9ff', label: "TERZİ EVİ" },
+            { x: 740, y: 1380, w: 255, h: 180, roof: '#7c3aed', wall: '#f8fafc', label: "KÖY EVİ" },
+            { x: 1280, y: 1450, w: 245, h: 175, roof: '#db2777', wall: '#fef2f2', label: "ÇOBAN EVİ" },
+            { x: 1820, y: 1430, w: 255, h: 180, roof: '#4f46e5', wall: '#f1f5f9', label: "DEPO EVİ" },
+            { x: 2210, y: 1390, w: 240, h: 175, roof: '#16a34a', wall: '#f0fdf4', label: "BAĞ EVİ" }
+        ];
+
+        let obstacles = []
